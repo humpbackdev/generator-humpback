@@ -14,7 +14,7 @@ then
 
   if [ ! -f ./settings/settings.secret.php ]; then
     echo "Creating ./settings/settings.secret.php"
-    printf "<?php\n/**\n * @file\n * Secret configuration settings for the site.\n */\n\n// Database.\n\$databases = array(\n  'default' => array(\n    'default' => array(\n      'database' => 'drupal',\n      'username' => 'drupal',\n      'password' => 'drupal',\n      'host' => 'localhost',\n      'driver' => 'mysql',\n    ),\n  ),\n);\n\n\$settings['hash_salt'] = 'local';\n" > settings/settings.secret.php
+    printf "<?php\n/**\n * @file\n * Secret configuration settings for the site.\n */\n\n// Database.\n\$databases = array(\n  'default' => array(\n    'default' => array(\n      'database' => 'drupal',\n      'username' => 'drupal',\n      'password' => 'drupal',\n      'host' => 'db',\n      'driver' => 'mysql',\n    ),\n  ),\n);\n\n\$settings['hash_salt'] = 'local';\n" > settings/settings.secret.php
   fi
   echo "Complete.";
 else
