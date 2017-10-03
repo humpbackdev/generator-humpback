@@ -5,6 +5,7 @@ const _ = require('lodash');
 const xml2js = require('xml2js');
 const https = require('https');
 const uuidV4 = require('uuid/v4');
+const remote = require('yeoman-remote');
 
 module.exports = class extends Generator {
   prompting() {
@@ -63,10 +64,18 @@ module.exports = class extends Generator {
 
   writing() {
     // @TODO:
-    // - Download https://github.com/kporras07/humpback at root
     // - Update README.md
     // - Update scripts files.
     // - Add .circleci folder
+    var self = this;
+    remote('kporras07', 'humpback', 'v1.0', function(err, extractPath) {
+      self.fs.copy(extractPath, self.destinationPath('./'));
+      self.fs.copyTpl(
+        self.templatePath('_README.md'),
+        self.destinationPath('README.md'),
+        self.props
+      );
+    });
     this.fs.copy(
       this.templatePath('composer-scripts'),
       this.destinationPath('composer-scripts')
@@ -94,11 +103,6 @@ module.exports = class extends Generator {
     this.fs.copyTpl(
       this.templatePath('_package.json'),
       this.destinationPath('package.json'),
-      this.props
-    );
-    this.fs.copyTpl(
-      this.templatePath('_README.md'),
-      this.destinationPath('README.md'),
       this.props
     );
     this.fs.copy(
