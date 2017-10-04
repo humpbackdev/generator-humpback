@@ -6,10 +6,10 @@ describe('generator-humpback:app', () => {
   beforeAll(() => {
     return helpers
       .run(path.join(__dirname, '../generators/app'))
-      .withPrompts({ someAnswer: true });
+      .withPrompts({ humanName: 'Humpback', appName: 'humpback' });
   });
 
   it('creates files', () => {
-    assert.file(['dummyfile.txt']);
+    assert.file(['composer.json']);
   });
 });
