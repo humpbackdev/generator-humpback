@@ -73,6 +73,11 @@ module.exports = class extends Generator {
         self.destinationPath('README.md'),
         self.props
       );
+      self.fs.copyTpl(
+        self.templatePath('site.ahoy.yml'),
+        self.destinationPath('.ahoy/site.ahoy.yml'),
+        self.props
+      );
     });
     this.fs.copy(
       this.templatePath('composer-scripts'),

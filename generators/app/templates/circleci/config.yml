@@ -90,16 +90,18 @@ jobs:
           name: Install ahoy
           command: |
             apt-get update -y && apt-get install wget -y
-            wget -q https://github.com/ahoy-cli/ahoy/releases/download/2.0.0-beta1/ahoy-bin-`uname -s`-amd64 -O /usr/local/bin/ahoy && chmod +x /usr/local/bin/ahoy
+            wget -q https://github.com/ahoy-cli/ahoy/releases/download/2.0.0/ahoy-bin-`uname -s`-amd64 -O /usr/local/bin/ahoy && chmod +x /usr/local/bin/ahoy
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "41:01:d5:46:43:33:a6:2d:ff:eb:1b:65:17:4b:34:63"
+            # @TODO: Add ssh_key fingerprint here.
+            - ""
       - run:
           name: Deploy
           command: |
-            git config --global user.email "ci@estudiomanati.com"
-            git config --global user.name "CI Bot"
+            # @TODO: Configure git.
+            git config --global user.email ""
+            git config --global user.name ""
             echo 'Host *' >> /root/.ssh/config
             echo '   StrictHostKeyChecking no' >> /root/.ssh/config
             ahoy deploy master "Auto deploy triggered from master branch"
