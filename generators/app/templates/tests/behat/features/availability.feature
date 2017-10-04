@@ -3,7 +3,6 @@ Feature: The site should be available.
   As a user
   I need to have access to the login page
 
-  @javascript
   Scenario: The login page exists.
     Given I am an anonymous user
     When I am at "/user"
