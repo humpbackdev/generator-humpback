@@ -83,6 +83,10 @@ This container have some cli utilities to manage your drupal site. See https://h
 
 In order to access the cli, you should run `ahoy bash`. Now, you can run commands like drush, ahoy, composer, node, grunt, python, etc inside the container.
 
+### Selenium
+
+Set wd_host to 'http://browser:4444/wd/hub' in behat config. If you need vnc, you can connect to url given by `ahoy docker vnc-url` using 'secret' as password.
+
 ## Ngrok
 
 This is used to share your local environment over the internet. In order to do this, you should run `ahoy docker share-url`. This command will give you an url that you can access in your browser and get the share urls for http and https.
