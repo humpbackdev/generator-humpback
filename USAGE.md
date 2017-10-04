@@ -1,14 +1,12 @@
 Humpback Generator
 ==================
 
-## How to use the generated project?
-
-### Dependencies
+## Dependencies
 
 * Docker
 * [Ahoy] (https://github.com/ahoy-cli/ahoy/releases)
 
-### Getting Started
+## Getting Started
 
 #### Prepare for local development:
 
@@ -53,11 +51,6 @@ In order to run behat tests; you should execute:
 ./scripts/local_behat.sh
 ```
 
-### Build Environment
-
-To build this environment you need recent docker compose and docker versions.
-After placing Drupal in the right folder, you should run `docker-compose up -d` or `ahoy up` and voilá! You can access your Drupal installation at the url provided by `ahoy docker url`
-
 ## Installed Stuff
 
 ### Nginx
@@ -96,6 +89,4 @@ It's a reverse proxy usually used in production. It's bundled here for situation
 
 To see the the mailhog UI, run `ahoy docker mailhog-url` and access that url from the browser. Your new messages will appear there.
 
-## Ahoy commands
-
-Some helpful commands are included using useful ahoy cli utility. In order to use them, you must install ahoy (https://github.com/ahoy-cli/ahoy) and then `ahoy help`
+Have fun!
