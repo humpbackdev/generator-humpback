@@ -1,6 +1,15 @@
 # generator-humpback [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
 > Generate a Drupal project using humpback
 
+## What's in the box?
+
+Using this generator; you'll get a folder ready to start working with Drupal using modern and cool technologies like docker, behat, composer, gulp and more
+
+Out of the box; you'll get the necessary stuff for building your Drupal site using composer. There are also some useful tools to check code quality (eslint, phplint, drupalcs) and some scripts for day-to-day tasks (generate settings, install site, run behat, etc).
+
+Besides that; you'll get a [CircleCI](http://circleci.com/) config file ready to create a circleci app the with necessary build steps and [Pantheon](http://pantheon.io/) deploy.
+
+
 ## Installation
 
 First, install [Yeoman](http://yeoman.io) and generator-humpback using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
@@ -15,6 +24,10 @@ Then generate your new project:
 ```bash
 yo humpback
 ```
+
+## Usage
+
+For usage instructions; please refer to: [USAGE.md](USAGE.md)
 
 ## Getting To Know Yeoman
 

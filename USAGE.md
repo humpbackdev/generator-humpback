@@ -1,6 +1,7 @@
-# <%= humanName %>
+Humpback Generator
+==================
 
-<%= humanName %> Drupal Distribution
+## How to use the generated project?
 
 ### Dependencies
 
@@ -26,7 +27,7 @@ Once created your containers; you should prepare your local site.
 Generate local settings file:
 
 ```bash
-./scripts/<%= appName %>_local_settings.sh
+./scripts/local_settings.sh
 ```
 
 Prepare the local site:
@@ -39,7 +40,7 @@ npm install
 Install the local site
 
 ```bash
-./scripts/_local_install.sh
+./scripts/<your_app>_local_install.sh
 ```
 
 ### Site UUID.
