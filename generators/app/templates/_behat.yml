@@ -19,8 +19,10 @@ default:
     Behat\MinkExtension:
       files_path: "%paths.base%/tests/sample_content"
       goutte: ~
-      selenium2: ~
-      base_url: http://<%= appName %>.dev
+      selenium2:
+        wd_host: 'http://browser:4444/wd/hub'
+        browser: 'chrome'
+      base_url: http://nginx
       javascript_session: 'selenium2'
     Drupal\DrupalExtension:
       blackbox: ~
@@ -30,9 +32,9 @@ default:
         error_message_selector: '.messages.error'
         success_message_selector: '.messages.status'
       drupal:
-        drupal_root: "/var/www/<%= appName %>/web"
+        drupal_root: "/var/www/html/web"
       drush:
-        root: "/var/www/<%= appName %>/web"
+        root: "/var/www/html/web"
       region_map:
         content: "#content"
         footer: "#footer"
@@ -57,12 +59,3 @@ circle:
         drupal_root: "/home/ubuntu/<%= appName %>/web"
       drush:
         root: "/home/ubuntu/<%= appName %>/web"
-wercker:
-  extensions:
-    Behat\MinkExtension:
-      base_url: http://<%= dashedAppName %>.dev:8080
-      selenium2: ~
-      browser_name: chrome
-    Drupal\DrupalExtension:
-      drupal:
-        drupal_root: "/pipeline/source/web"
