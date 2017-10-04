@@ -64,12 +64,13 @@ module.exports = class extends Generator {
 
   writing() {
     // @TODO:
-    // - Update README.md
     // - Update scripts files.
     // - Add .circleci folder
     var self = this;
     remote('kporras07', 'humpback', 'v1.0', function(err, extractPath) {
       self.fs.copy(extractPath, self.destinationPath('./'));
+      self.fs.copy(extractPath + '/.ahoy', self.destinationPath('.ahoy'));
+      self.fs.copy(extractPath + '/.ahoy.yml', self.destinationPath('.ahoy.yml'));
       self.fs.copyTpl(
         self.templatePath('_README.md'),
         self.destinationPath('README.md'),
