@@ -1,0 +1,38 @@
+server {
+    listen 80;
+    root /var/www/<%= appName %>/web;
+    gzip_static on;
+    fastcgi_read_timeout 300;
+    location = /favicon.ico {
+        log_not_found off;
+        access_log off;
+    }
+    location = /robots.txt {
+        allow all;
+        log_not_found off;
+        access_log off;
+    }
+    location ~ \..*/.*\.php$ {
+        return 403;
+    }
+    location ~ (^|/)\. {
+        return 403;
+    }
+    location / {
+        try_files $uri @rewrite;
+    }
+    location @rewrite {
+        rewrite ^ /index.php;
+    }
+    location ~ \.php$ {
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/var/run/php-fpm.sock;
+        include fastcgi_params;
+        fastcgi_param SERVER_NAME $host;
+        fastcgi_param SCRIPT_FILENAME $request_filename;
+        fastcgi_param HTTPS off;
+    }
+    location ~ ^/sites/.*/files/styles/ {
+        try_files $uri @rewrite;
+    }
+}

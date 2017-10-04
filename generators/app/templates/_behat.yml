@@ -51,11 +51,11 @@ default:
 circle:
   extensions:
     Behat\MinkExtension:
-      base_url: http://<%= dashedAppName %>.dev:8080
+      base_url: http://<%= dashedAppName %>.dev
       selenium2: ~
       browser_name: chrome
     Drupal\DrupalExtension:
       drupal:
-        drupal_root: "/home/ubuntu/<%= appName %>/web"
+        drupal_root: "/var/www/<%= appName %>/web"
       drush:
-        root: "/home/ubuntu/<%= appName %>/web"
+        root: "/var/www/<%= appName %>/web"

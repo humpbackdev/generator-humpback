@@ -63,17 +63,19 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    // @TODO:
-    // - Update scripts files.
-    // - Add .circleci folder
     var self = this;
-    remote('kporras07', 'humpback', 'v1.0', function(err, extractPath) {
+    remote('humpbackdev', 'humpback', 'v1.1', function(err, extractPath) {
       self.fs.copy(extractPath, self.destinationPath('./'));
       self.fs.copy(extractPath + '/.ahoy', self.destinationPath('.ahoy'));
       self.fs.copy(extractPath + '/.ahoy.yml', self.destinationPath('.ahoy.yml'));
       self.fs.copyTpl(
         self.templatePath('_README.md'),
         self.destinationPath('README.md'),
+        self.props
+      );
+      self.fs.copyTpl(
+        self.templatePath('site.ahoy.yml'),
+        self.destinationPath('.ahoy/site.ahoy.yml'),
         self.props
       );
     });
@@ -187,6 +189,25 @@ module.exports = class extends Generator {
       this.templatePath('_humpback_local_install.sh'),
       this.destinationPath('scripts/' + this.props.appName + '_local_install.sh'),
       this.props
+    );
+    this.fs.copyTpl(
+      this.templatePath('circleci/site'),
+      this.destinationPath('.circleci/' + this.props.appName),
+      this.props
+    );
+    this.fs.copyTpl(
+      this.templatePath('circleci/site.aliases.drushrc.php'),
+      this.destinationPath('.circleci/' + this.props.appName + '.aliases.drushrc.php'),
+      this.props
+    );
+    this.fs.copyTpl(
+      this.templatePath('circleci/config.yml'),
+      this.destinationPath('.circleci/config.yml'),
+      this.props
+    );
+    this.fs.copy(
+      this.templatePath('circleci/settings.secret.php'),
+      this.destinationPath('.circleci/settings.secret.php')
     );
   }
 
