@@ -1,0 +1,173 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: tbfisher/drupal-nginx:php-7.0.x
+      - image: mariadb:5.5
+        environment:
+          MYSQL_DATABASE: drupal
+          MYSQL_ROOT_PASSWORD: drupal
+    working_directory: /var/www/<%= appName %>
+    steps:
+      - run: apt-get update -y && apt-get install python -y
+      - run: echo 127.0.0.1 <%= dashedAppName %>.dev | tee -a /etc/hosts
+      - checkout
+      - restore_cache:
+          keys:
+            - npm-cache-{{ checksum "package.json" }}
+            - composer-cache-{{ checksum "composer.lock" }}
+      - run:
+          name: Install Node 6
+          command: |
+            curl "https://deb.nodesource.com/setup_6.x" -o "setup_6.x"
+            chmod +x setup_6.x
+            ./setup_6.x
+            rm setup_6.x
+            apt-get install nodejs -y
+      - run: npm install
+      - save_cache:
+         key: npm-cache-{{ checksum "package.json" }}
+         paths:
+           - node_modules
+      - run:
+          name: Install Composer
+          command: |
+            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+            php -r "copy('https://composer.github.io/installer.sig', 'composer-setup.sig');" && \
+            php -r "if (hash_file('SHA384', 'composer-setup.php') === trim(file_get_contents('composer-setup.sig'))) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
+            php composer-setup.php && \
+            php -r "unlink('composer-setup.php');"
+            mv composer.phar /usr/bin/composer
+      - run:
+          name: Install and configure drush
+          command: |
+            composer global require drush/drush:8.* --no-interaction
+            mkdir -p ~/.drush
+            cp ./.circleci/<%= appName %>.aliases.drushrc.php ~/.drush
+            drush cc drush
+      - run:
+          name: Configure Nginx
+          command: |
+            cp ./.circleci/<%= appName %> /etc/nginx/sites-available/default
+      - run:
+          name: Build site.
+          command: |
+            cp ./.circleci/settings.secret.php ./settings/
+            composer install
+            chmod 777 -R ./web/sites/default/files
+            drush site-set @<%= appName %>.<%= dashedAppName %>.dev
+            if [ -f /var/www/<%= appName %>/config/sync/core.extension.yml ] ; then echo 'Install with config' ; /usr/bin/env PHP_OPTIONS="-d sendmail_path=`which true`" drush si <%= appName %> -y ; drush config-set "system.site" uuid $SITE_UUID -y ; drush cim -y ; else echo 'Install without config' ; /usr/bin/env PHP_OPTIONS="-d sendmail_path=`which true`" drush si <%= appName %> -y ; fi
+      - run:
+          name: Coding Standards Linters
+          command: |
+            ./node_modules/.bin/gulp phplint
+            ./node_modules/.bin/gulp drupalcs
+            ./node_modules/.bin/gulp eslint
+      - run:
+          name: Behat Testing
+          command: |
+            /etc/init.d/nginx start > nginx.log &
+            /etc/init.d/php7.0-fpm start > php7.0-fpm.log &
+            ./vendor/bin/behat -p circle
+
+  deploy:
+    docker:
+      - image: tbfisher/drupal-nginx:php-7.0.x
+    working_directory: /var/www/<%= appName %>
+    steps:
+      - checkout
+      - run:
+          name: Install Composer
+          command: |
+            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+            php -r "copy('https://composer.github.io/installer.sig', 'composer-setup.sig');" && \
+            php -r "if (hash_file('SHA384', 'composer-setup.php') === trim(file_get_contents('composer-setup.sig'))) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
+            php composer-setup.php && \
+            php -r "unlink('composer-setup.php');"
+            mv composer.phar /usr/bin/composer
+      - run: composer install
+      - run:
+          name: Install ahoy
+          command: |
+            apt-get update -y && apt-get install wget -y
+            wget -q https://github.com/ahoy-cli/ahoy/releases/download/2.0.0-beta1/ahoy-bin-`uname -s`-amd64 -O /usr/local/bin/ahoy && chmod +x /usr/local/bin/ahoy
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "41:01:d5:46:43:33:a6:2d:ff:eb:1b:65:17:4b:34:63"
+      - run:
+          name: Deploy
+          command: |
+            git config --global user.email "ci@estudiomanati.com"
+            git config --global user.name "CI Bot"
+            echo 'Host *' >> /root/.ssh/config
+            echo '   StrictHostKeyChecking no' >> /root/.ssh/config
+            ahoy deploy master "Auto deploy triggered from master branch"
+      - run:
+          name: Install and login terminus
+          command: |
+            mkdir terminus && cd terminus
+            curl -O https://raw.githubusercontent.com/pantheon-systems/terminus-installer/master/builds/installer.phar && php installer.phar install
+            ln -s /var/www/<%= appName %>/terminus/vendor/bin/terminus /usr/bin/terminus
+            terminus auth:login --machine-token=$PANTHEON_TOKEN
+            terminus drush <%= dashedAppName %>.dev -- si <%= appName %> --account-pass=admin -y
+            terminus drush <%= dashedAppName %>.dev -- config-set "system.site" uuid "$SITE_UUID" -y
+            terminus drush <%= dashedAppName %>.dev -- cim -y
+            terminus drush <%= dashedAppName %>.dev -- cr
+  deploy-test:
+    docker:
+      - image: tbfisher/drupal-nginx:php-7.0.x
+    working_directory: /var/www/<%= appName %>
+    steps:
+      - run:
+          name: Install and login terminus
+          command: |
+            echo 'Host *' >> /root/.ssh/config
+            echo '   StrictHostKeyChecking no' >> /root/.ssh/config
+            mkdir terminus && cd terminus
+            curl -O https://raw.githubusercontent.com/pantheon-systems/terminus-installer/master/builds/installer.phar && php installer.phar install
+            ln -s /var/www/<%= appName %>/terminus/vendor/bin/terminus /usr/bin/terminus
+            terminus auth:login --machine-token=$PANTHEON_TOKEN
+            terminus env:deploy <%= dashedAppName %>.test --note "Autodeploy from Circle" -y
+            terminus drush <%= dashedAppName %>.test -- updb -y
+            terminus drush <%= dashedAppName %>.test -- cim -y
+            terminus drush <%= dashedAppName %>.test -- cr
+  deploy-live:
+    docker:
+      - image: tbfisher/drupal-nginx:php-7.0.x
+    working_directory: /var/www/<%= appName %>
+    steps:
+      - run:
+          name: Install and login terminus
+          command: |
+            echo 'Host *' >> /root/.ssh/config
+            echo '   StrictHostKeyChecking no' >> /root/.ssh/config
+            mkdir terminus && cd terminus
+            curl -O https://raw.githubusercontent.com/pantheon-systems/terminus-installer/master/builds/installer.phar && php installer.phar install
+            ln -s /var/www/<%= appName %>/terminus/vendor/bin/terminus /usr/bin/terminus
+            terminus auth:login --machine-token=$PANTHEON_TOKEN
+            terminus env:deploy <%= dashedAppName %>.live --note "Autodeploy from Circle" -y
+            terminus drush <%= dashedAppName %>.live -- updb -y
+            terminus drush <%= dashedAppName %>.live -- cim -y
+            terminus drush <%= dashedAppName %>.live -- cr
+workflows:
+  version: 2
+  build-deploys:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+      - deploy-test:
+          requires:
+            - deploy
+      - deploy-live-hold:
+          type: approval
+          requires:
+            - deploy-test
+      - deploy-live:
+          requires:
+            - deploy-live-hold
