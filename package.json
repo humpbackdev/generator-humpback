@@ -2,7 +2,7 @@
   "name": "generator-humpback",
   "version": "0.0.0",
   "description": "Generate a Drupal project using humpback",
-  "homepage": "http://humpback.tk",
+  "homepage": "https://humpbackdev.com",
   "author": {
     "name": "Kevin Porras",
     "email": "kporras07@gmail.com",
@@ -73,6 +73,6 @@
     },
     "plugins": ["prettier"]
   },
-  "repository": "kporras07/generator-humpback",
+  "repository": "humpbackdev/generator-humpback",
   "license": "GPL-3.0"
 }

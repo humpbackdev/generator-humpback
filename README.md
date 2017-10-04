@@ -38,12 +38,12 @@ For usage instructions; please refer to: [USAGE.md](USAGE.md)
 
 ## License
 
-GPL-3.0 © [Kevin Porras](https://www.twitter.com/kporras07)
+GPL-3.0 ©
 
 
 [npm-image]: https://badge.fury.io/js/generator-humpback.svg
 [npm-url]: https://npmjs.org/package/generator-humpback
-[travis-image]: https://travis-ci.org/kporras07/generator-humpback.svg?branch=master
-[travis-url]: https://travis-ci.org/kporras07/generator-humpback
-[daviddm-image]: https://david-dm.org/kporras07/generator-humpback.svg?theme=shields.io
-[daviddm-url]: https://david-dm.org/kporras07/generator-humpback
+[travis-image]: https://travis-ci.org/humpbackdev/generator-humpback.svg?branch=master
+[travis-url]: https://travis-ci.org/humpbackdev/generator-humpback
+[daviddm-image]: https://david-dm.org/humpbackdev/generator-humpback.svg?theme=shields.io
+[daviddm-url]: https://david-dm.org/humpbackdev/generator-humpback
