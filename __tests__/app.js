@@ -10,6 +10,6 @@ describe('generator-humpback:app', () => {
   });
 
   it('creates files', () => {
-    assert.file(['.ahoy.yml']);
+    assert.file(['composer.json']);
   });
 });
