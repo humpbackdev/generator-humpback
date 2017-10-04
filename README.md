@@ -1,5 +1,5 @@
 # generator-humpback [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
-> Generate a Drupal project using humpback
+> Generate a Drupal project using Humpback
 
 ## What's in the box?
 
@@ -29,16 +29,21 @@ yo humpback
 
 For usage instructions; please refer to: [USAGE.md](USAGE.md)
 
-## Getting To Know Yeoman
+## Contributing
 
- * Yeoman has a heart of gold.
- * Yeoman is a person with feelings and opinions, but is very easy to work with.
- * Yeoman can be too opinionated at times but is easily convinced not to be.
- * Feel free to [learn more about Yeoman](http://yeoman.io/).
+Use the project, fork it, and submit PRs. We are responsive and will review them as soon as possible!
+
+## Credits and Usage
+
+Humpback is a trademark of Estudio Manatí S.A. You are free to use the logo to promote the Humpback product as long as you do not modify it in any way.
+
+Drupal is a registered trademark of Dries Buytaert.
+
+Docker and the Docker logo are trademarks or registered trademarks of Docker, Inc. in the United States and/or other countries. Docker, Inc. and other parties may also have trademark rights in other terms used herein.
 
 ## License
 
-GPL-3.0 ©
+GPL-3.0 © Estudio Manatí S.A.
 
 
 [npm-image]: https://badge.fury.io/js/generator-humpback.svg
