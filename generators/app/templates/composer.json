@@ -5,6 +5,10 @@
     {
       "type": "composer",
       "url": "https://packages.drupal.org/8"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/kporras07/BehatExtension"
     }
   ],
   "require": {
@@ -15,11 +19,11 @@
     "cweagans/composer-patches": "~1.0"
   },
   "require-dev": {
-    "testdrupal/behatextension": "dev-master",
+    "TestDrupal/BehatExtension": "dev-update",
     "drush/drush": "~9.0",
     "squizlabs/php_codesniffer": "2.5.1",
     "drupal/coder": "8.2.5",
-    "behat/behat": "3.0.15",
+    "behat/behat": "3.4.0",
     "drupal/console": "~1.0"
   },
   "conflict": {
