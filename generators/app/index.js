@@ -44,21 +44,6 @@ module.exports = class extends Generator {
 
       this.props.siteUuid = uuidV4();
       this.props.coreVersion = '8.3.7';
-      var self = this;
-      var parser = new xml2js.Parser();
-      var url = 'https://updates.drupal.org/release-history/drupal/8.x';
-      https.get(url, function(res) {
-        var xml = '';
-        res.on('data', function(chunk) {
-          xml += chunk;
-        });
-        res.on('error', function() {});
-        res.on('end', function() {
-          parser.parseString(xml, function(err, result) {
-            self.props.coreVersion = result.project.releases[0].release[0].version;
-          });
-        });
-      });
     });
   }
 
@@ -79,14 +64,36 @@ module.exports = class extends Generator {
         self.props
       );
     });
+    var parser = new xml2js.Parser();
+    var url = 'https://updates.drupal.org/release-history/drupal/8.x';
+    https.get(url, function(res) {
+      var xml = '';
+      res.on('data', function(chunk) {
+        xml += chunk;
+      });
+      res.on('error', function() {
+        self.fs.copyTpl(
+          self.templatePath('_composer.drupal.json'),
+          self.destinationPath('composer.drupal.json'),
+          self.props
+        );
+      });
+      res.on('end', function() {
+        parser.parseString(xml, function(err, result) {
+          if (!err) {
+            self.props.coreVersion = result.project.releases[0].release[0].version;
+          }
+          self.fs.copyTpl(
+            self.templatePath('_composer.drupal.json'),
+            self.destinationPath('composer.drupal.json'),
+            self.props
+          );
+        });
+      });
+    });
     this.fs.copy(
       this.templatePath('composer-scripts'),
       this.destinationPath('composer-scripts')
-    );
-    this.fs.copyTpl(
-      this.templatePath('_composer.drupal.json'),
-      this.destinationPath('composer.drupal.json'),
-      this.props
     );
     this.fs.copy(
       this.templatePath('composer.drupal.patches.json'),
