@@ -3,6 +3,7 @@ jobs:
   build:
     docker:
       - image: tbfisher/drupal-nginx:php-7.1.x
+      - image: selenium/standalone-chrome-debug:3.6.0
       - image: mariadb:5.5
         environment:
           MYSQL_DATABASE: drupal
@@ -39,13 +40,6 @@ jobs:
             php -r "unlink('composer-setup.php');"
             mv composer.phar /usr/bin/composer
       - run:
-          name: Install and configure drush
-          command: |
-            composer global require drush/drush:8.* --no-interaction
-            mkdir -p ~/.drush
-            cp ./.circleci/<%= appName %>.aliases.drushrc.php ~/.drush
-            drush cc drush
-      - run:
           name: Configure Nginx
           command: |
             cp ./.circleci/<%= appName %> /etc/nginx/sites-available/default
@@ -55,8 +49,9 @@ jobs:
             cp ./.circleci/settings.secret.php ./settings/
             composer install
             chmod 777 -R ./web/sites/default/files
-            drush site-set @<%= appName %>.<%= dashedAppName %>.dev
-            if [ -f /var/www/<%= appName %>/config/sync/core.extension.yml ] ; then echo 'Install with config' ; /usr/bin/env PHP_OPTIONS="-d sendmail_path=`which true`" drush si <%= appName %> -y ; drush config-set "system.site" uuid $SITE_UUID -y ; drush cim -y ; else echo 'Install without config' ; /usr/bin/env PHP_OPTIONS="-d sendmail_path=`which true`" drush si <%= appName %> -y ; fi
+            cd web
+            if [ -f /var/www/<%= appName %>/config/sync/core.extension.yml ] ; then echo 'Install with config' ; /usr/bin/env PHP_OPTIONS="-d sendmail_path=`which true`" ../vendor/bin/drush si <%= appName %> -y ; ../vendor/bin/drush config-set "system.site" uuid $SITE_UUID -y ; ../vendor/bin/drush cim -y ; else echo 'Install without config' ; /usr/bin/env PHP_OPTIONS="-d sendmail_path=`which true`" ../vendor/bin/drush si <%= appName %> -y ; fi
+            cd /var/www/<%= appName %>
       - run:
           name: Coding Standards Linters
           command: |
