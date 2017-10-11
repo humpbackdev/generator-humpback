@@ -52,7 +52,9 @@ circle:
   extensions:
     Behat\MinkExtension:
       base_url: http://<%= dashedAppName %>.dev
-      selenium2: ~
+      selenium2:
+        wd_host: 'http://127.0.0.1:4444/wd/hub'
+        browser: 'chrome'
       browser_name: chrome
     Drupal\DrupalExtension:
       drupal:
