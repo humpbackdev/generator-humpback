@@ -49,7 +49,7 @@ module.exports = class extends Generator {
 
   writing() {
     var self = this;
-    remote('humpbackdev', 'humpback', 'v1.3', function(err, extractPath) {
+    remote('humpbackdev', 'humpback', 'v1.4', function(err, extractPath) {
       self.fs.copy(extractPath, self.destinationPath('./'));
       self.fs.copy(extractPath + '/.ahoy', self.destinationPath('.ahoy'));
       self.fs.copy(extractPath + '/.ahoy.yml', self.destinationPath('.ahoy.yml'));
@@ -100,6 +100,7 @@ module.exports = class extends Generator {
       this.destinationPath('composer.drupal.patches.json')
     );
     this.fs.copy(this.templatePath('pantheon.yml'), this.destinationPath('pantheon.yml'));
+    this.fs.copyTpl(this.templatePath('env'), this.destinationPath('.env'), this.props);
     this.fs.copyTpl(
       this.templatePath('_behat.yml'),
       this.destinationPath('behat.yml'),
