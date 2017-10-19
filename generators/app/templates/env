@@ -1,0 +1,4 @@
+#!/bin/bash
+
+## Change value as necessary.
+VIRTUAL_HOST=<%= appName %>.docker
