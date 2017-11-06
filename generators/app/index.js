@@ -49,7 +49,7 @@ module.exports = class extends Generator {
 
   writing() {
     var self = this;
-    remote('humpbackdev', 'humpback', 'v1.6', function(err, extractPath) {
+    remote('humpbackdev', 'humpback', 'v1.7', function(err, extractPath) {
       self.fs.copy(extractPath, self.destinationPath('./'));
       self.fs.copy(extractPath + '/.ahoy', self.destinationPath('.ahoy'));
       self.fs.copy(extractPath + '/.ahoy.yml', self.destinationPath('.ahoy.yml'));
