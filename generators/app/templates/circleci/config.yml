@@ -99,7 +99,7 @@ jobs:
             git config --global user.name ""
             echo 'Host *' >> /root/.ssh/config
             echo '   StrictHostKeyChecking no' >> /root/.ssh/config
-            ahoy deploy master "Auto deploy triggered from master branch"
+            ahoy site deploy master "Auto deploy triggered from master branch"
       - run:
           name: Install and login terminus
           command: |

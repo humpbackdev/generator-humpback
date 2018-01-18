@@ -10,6 +10,6 @@ describe('generator-humpback:app', () => {
   });
 
   it('creates files', () => {
-    assert.file(['composer.json']);
+    assert.file(['composer.patches.json']);
   });
 });
