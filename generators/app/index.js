@@ -73,8 +73,8 @@ module.exports = class extends Generator {
       });
       res.on('error', function() {
         self.fs.copyTpl(
-          self.templatePath('_composer.drupal.json'),
-          self.destinationPath('composer.drupal.json'),
+          self.templatePath('_composer.json'),
+          self.destinationPath('composer.json'),
           self.props
         );
       });
@@ -84,8 +84,8 @@ module.exports = class extends Generator {
             self.props.coreVersion = result.project.releases[0].release[0].version;
           }
           self.fs.copyTpl(
-            self.templatePath('_composer.drupal.json'),
-            self.destinationPath('composer.drupal.json'),
+            self.templatePath('_composer.json'),
+            self.destinationPath('composer.json'),
             self.props
           );
         });
@@ -96,8 +96,8 @@ module.exports = class extends Generator {
       this.destinationPath('composer-scripts')
     );
     this.fs.copy(
-      this.templatePath('composer.drupal.patches.json'),
-      this.destinationPath('composer.drupal.patches.json')
+      this.templatePath('composer.patches.json'),
+      this.destinationPath('composer.patches.json')
     );
     this.fs.copy(this.templatePath('pantheon.yml'), this.destinationPath('pantheon.yml'));
     this.fs.copyTpl(this.templatePath('env'), this.destinationPath('.env'), this.props);
@@ -105,10 +105,6 @@ module.exports = class extends Generator {
       this.templatePath('_behat.yml'),
       this.destinationPath('behat.yml'),
       this.props
-    );
-    this.fs.copy(
-      this.templatePath('composer.json'),
-      this.destinationPath('composer.json')
     );
     this.fs.copy(this.templatePath('gulpfile.js'), this.destinationPath('gulpfile.js'));
     this.fs.copyTpl(
@@ -224,7 +220,6 @@ module.exports = class extends Generator {
       this.log('Run npm install && composer install to start working');
     } else {
       this.npmInstall();
-      this.spawnCommand('composer', ['install']);
     }
   }
 };
