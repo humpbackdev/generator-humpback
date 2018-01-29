@@ -2,10 +2,13 @@ language: node_js
 node_js:
   - 7
   - 6
-before_deploy:
-  - npm install -g nsp yeoman
+before_script:
+  - npm install -g yeoman
   - npm install
   - npm link
+before_deploy:
+  - npm install -g nsp
+  - npm install
 script:
   - 'mkdir $HOME/humpbacktest && cd $HOME/humpbacktest'
   - 'yo humpback --humanName="humpbacktest" --appName="humpbacktest" --skip-install'
