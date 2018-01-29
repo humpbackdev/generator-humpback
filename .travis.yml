@@ -3,7 +3,7 @@ node_js:
   - 7
   - 6
 before_script:
-  - npm install -g yeoman
+  - npm install -g yo
   - npm install
   - npm link
 before_deploy:
