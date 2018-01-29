@@ -81,7 +81,17 @@ module.exports = class extends Generator {
       res.on('end', function() {
         parser.parseString(xml, function(err, result) {
           if (!err) {
-            self.props.coreVersion = result.project.releases[0].release[0].version;
+            for (
+              var index = 0;
+              index < result.project.releases[0].release.length;
+              index++
+            ) {
+              var release = result.project.releases[0].release[index];
+              if (typeof release.version_extra === 'undefined') {
+                self.props.coreVersion = release.version;
+                break;
+              }
+            }
           }
           self.fs.copyTpl(
             self.templatePath('_composer.json'),
