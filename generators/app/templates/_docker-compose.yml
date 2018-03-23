@@ -1,0 +1,153 @@
+version: "3"
+services:
+  solr:
+    build: ./solr
+    expose:
+      - "8983"
+    entrypoint:
+      - "docker-entrypoint.sh"
+      - "solr-create"
+      - "-c"
+      - "collection1"
+      - "-d"
+      - "/config"
+    networks:
+      - internal
+
+  db:
+    image: mariadb:10.3
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=drupal
+      - MYSQL_USER=drupal
+      - MYSQL_PASSWORD=drupal
+    expose:
+      - "3306"
+    networks:
+      - internal
+    volumes:
+      - '<%= appName %>_database:/var/lib/mysql'
+      - './mysql:/etc/mysql/conf.d'
+
+  php:
+    build: ./php
+    expose:
+      - "9000"
+    links:
+      - db
+      - solr
+      - memcached
+    volumes:
+      - "./:/var/www/html:delegated"
+    networks:
+      - internal
+
+  nginx:
+    build: ./nginx
+    environment:
+      - VIRTUAL_HOST=${VIRTUAL_HOST-localhost}
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.backend=nginx'
+      - 'traefik.frontend.rule=Host:${VIRTUAL_HOST-localhost}'
+      - 'traefik.docker.network=humpback_proxy'
+      - 'traefik.port=80'
+    ports:
+      - "80"
+    links:
+      - php
+    volumes:
+      - "./:/var/www/html:delegated"
+    networks:
+      - internal
+      - humpback_proxy
+
+  cli:
+    image: kporras07/docker-drupal-cli:v0.10.6
+    links:
+      - php
+      - nginx
+      - db
+      - solr
+      - memcached
+      - browser
+    volumes:
+      - "./:/var/www/html:delegated"
+      - "~/.ssh:/.ssh:delegated"
+    networks:
+      - internal
+
+  memcached:
+    image: memcached:1-alpine
+    environment:
+      # Memcached memory limit in megabytes
+      - MEMCACHED_MEMORY_LIMIT=128
+    networks:
+      - internal
+
+  browser:
+    image: selenium/standalone-chrome-debug:3.6.0
+    # This helps keep selenium-chrome from crashing because it uses shared memory.
+    volumes:
+      - /dev/shm:/dev/shm
+    links:
+      - nginx
+    ports:
+      - "5900"
+    networks:
+      - internal
+
+  share:
+    image: fnichol/ngrok
+    environment:
+      - HTTP_PORT=nginx:80
+    links:
+      - nginx
+    ports:
+      - "4040"
+    networks:
+      - internal
+
+  varnish:
+    image: thiagofigueiro/varnish-alpine-docker:3.5
+    environment:
+      - VARNISH_BACKEND_ADDRESS=nginx
+      - VARNISH_BACKEND_PORT=80
+      - VIRTUAL_HOST=${VIRTUAL_HOST-localhost}
+    links:
+      - nginx
+    ports:
+      - "80"
+    networks:
+      - internal
+      - humpback_proxy
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.backend=varnish'
+      - 'traefik.frontend.rule=Host:varnish.${VIRTUAL_HOST-localhost}'
+      - 'traefik.docker.network=humpback_proxy'
+      - 'traefik.port=80'
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.0
+    environment:
+      - VIRTUAL_HOST=${VIRTUAL_HOST-localhost}
+    ports:
+      - "1025"
+      - "8025"
+    networks:
+      - internal
+      - humpback_proxy
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.backend=mailhog'
+      - 'traefik.frontend.rule=Host:mailhog.${VIRTUAL_HOST-localhost}'
+      - 'traefik.docker.network=humpback_proxy'
+      - 'traefik.port=8025'
+volumes:
+  <%= appName %>_database: {}
+networks:
+  humpback_proxy:
+    external: true
+  internal:
+    external: false
