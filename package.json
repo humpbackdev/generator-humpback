@@ -41,7 +41,7 @@
     "uuid": "^3.1.0",
     "xml2js": "^0.4.19",
     "yeoman-generator": "^2.0.1",
-    "yeoman-remote": "https://github.com/dharizza/yeoman-remote#5bed75f",
+    "yeoman-remote": "https://github.com/dharizza/yeoman-remote.git",
     "yosay": "^2.0.0"
   },
   "jest": {
