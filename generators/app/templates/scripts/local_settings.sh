@@ -19,5 +19,5 @@ then
   echo "Complete.";
 else
   echo "Local settings were not created, this script didn't run!"
-  echo 'If you want to run it then answear "Y" when prompted'
+  echo 'If you want to run it then answer "Y" when prompted'
 fi
