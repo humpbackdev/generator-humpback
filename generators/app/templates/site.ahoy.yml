@@ -44,3 +44,7 @@ commands:
       else
         ahoy docker exec cli "./vendor/bin/behat ./tests/behat/features/$1.feature"
       fi
+  console:
+    usage: Run console commands
+    cmd: |
+      ahoy docker exec cli "./vendor/bin/drupal $1"
