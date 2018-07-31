@@ -48,3 +48,16 @@ commands:
     usage: Run console commands
     cmd: |
       ahoy docker exec cli "./vendor/bin/drupal $1"
+  install:
+    usage: Run install commands
+    cmd: |
+      SITE_UUID="fe9b563e-a82d-48f6-b0e7-a429bb0b2024"
+      ahoy drush cc drush
+      echo "Installing..."
+      ahoy drush si updates --account-pass=admin -y
+      echo "Set site uuid..."
+      ahoy drush config-set "system.site" uuid "$SITE_UUID" -y
+      echo "Importing config..."
+      if [ -f ./config/sync/core.extension.yml ] ; then ahoy drush cim -y ; fi
+      echo "Cleaning cache..."
+      ahoy drush cr

@@ -205,11 +205,6 @@ module.exports = class extends Generator {
       this.destinationPath('config/sync/.htaccess')
     );
     this.fs.copyTpl(
-      this.templatePath('_humpback_local_install.sh'),
-      this.destinationPath('scripts/' + this.props.appName + '_local_install.sh'),
-      this.props
-    );
-    this.fs.copyTpl(
       this.templatePath('circleci/site'),
       this.destinationPath('.circleci/' + this.props.appName),
       this.props
