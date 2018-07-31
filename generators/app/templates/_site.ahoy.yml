@@ -51,7 +51,7 @@ commands:
   install:
     usage: Run install commands
     cmd: |
-      SITE_UUID="fe9b563e-a82d-48f6-b0e7-a429bb0b2024"
+      SITE_UUID="<%= siteUuid %>"
       ahoy drush cc drush
       echo "Installing..."
       ahoy drush si updates --account-pass=admin -y

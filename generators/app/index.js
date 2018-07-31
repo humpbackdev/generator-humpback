@@ -59,7 +59,7 @@ module.exports = class extends Generator {
         self.props
       );
       self.fs.copyTpl(
-        self.templatePath('site.ahoy.yml'),
+        self.templatePath('_site.ahoy.yml'),
         self.destinationPath('.ahoy/site.ahoy.yml'),
         self.props
       );
