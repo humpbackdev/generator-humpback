@@ -26,7 +26,7 @@ Once created your containers; you should prepare your local site.
 Generate local settings file:
 
 ```bash
-./scripts/local_settings.sh
+ahoy site local-settings
 ```
 
 Prepare the local site:
@@ -39,7 +39,7 @@ npm install
 Install the local site
 
 ```bash
-./scripts/<%= appName %>_local_install.sh
+ahoy site install
 ```
 
 ### Site UUID.
@@ -49,7 +49,7 @@ Site uuid can be found in the installation script. You should create a variable 
 In order to run behat tests; you should execute:
 
 ```bash
-./scripts/local_behat.sh
+ahoy site behat
 ```
 
 ### Build Environment
