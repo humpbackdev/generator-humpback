@@ -89,11 +89,12 @@ This is used to share your local environment over the internet. In order to do t
 
 ## Varnish
 
-It's a reverse proxy usually used in production. It's bundled here for situations where you need to test with the varnish cache. In order to access the site through varnish, run `ahoy docker varnish-url` and open that url in your browser. If proxy is running, you can access site through varnish at http://varnish.<domain> 
+It's a reverse proxy usually used in production. It's bundled here for situations where you need to test with the varnish cache. In order to access the site through varnish, run `ahoy docker varnish-url` and open that url in your browser. If proxy is running, you can access site through varnish at http://varnish.YOURDOMAIN
 
 ## Mailhog
 
-To see the the mailhog UI, run `ahoy docker mailhog-url` and access that url from the browser. Your new messages will appear there. If proxy is running, you can access mailhog at http://mailhog.<domain> 
+To see the the mailhog UI, run `ahoy docker mailhog-url` and access that url from the browser. Your new messages will appear there. If proxy is running, you can access mailhog at http://mailhog.YOURDOMAIN
+In order to send your emails from Drupal to mailhog you have two choices: using default sendmail configuration or using SMTP. If you decide for SMTP, you should set the mailhog host and port (mailhog:1025).
   
 ## VNC
 
