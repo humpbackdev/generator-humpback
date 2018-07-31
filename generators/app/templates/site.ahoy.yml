@@ -61,3 +61,15 @@ commands:
       if [ -f ./config/sync/core.extension.yml ] ; then ahoy drush cim -y ; fi
       echo "Cleaning cache..."
       ahoy drush cr
+  local-settings:
+    usage: Generate local settings
+    cmd: |
+      if [ ! -f ./settings/settings.local.php ]; then
+        echo "Creating ./settings/settings.local.php"
+        printf "<?php\n/**\n * @file\n * Local development settings.\n */\n\n\$config['system.performance']['css']['
+      fi
+      if [ ! -f ./settings/settings.secret.php ]; then
+        echo "Creating ./settings/settings.secret.php"
+        printf "<?php\n/**\n * @file\n * Secret configuration settings for the site.\n */\n\n// Database.\n\$databas
+      fi
+      echo "Complete.";

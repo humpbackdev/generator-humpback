@@ -181,11 +181,6 @@ module.exports = class extends Generator {
       this.props
     );
     this.fs.copyTpl(
-      this.templatePath('scripts'),
-      this.destinationPath('scripts'),
-      this.props
-    );
-    this.fs.copyTpl(
       this.templatePath('settings'),
       this.destinationPath('settings'),
       this.props
