@@ -38,7 +38,7 @@ class FeatureContext extends RawDrupalContext {
   /**
    * Log-in the current user.
    */
-  public function login() {
+  public function login(stdClass $user) {
     // Check if logged in.
     if ($this->loggedIn()) {
       $this->logout();

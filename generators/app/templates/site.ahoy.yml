@@ -35,3 +35,12 @@ commands:
       git checkout -- composer.lock
       composer install --ignore-platform-reqs
       git checkout -- composer.lock
+  behat:
+    usage: Run behat tests
+    cmd: |
+      if [ $# -eq 0 ]
+      then
+        ahoy docker exec cli "./vendor/bin/behat"
+      else
+        ahoy docker exec cli "./vendor/bin/behat ./tests/behat/features/$1.feature"
+      fi
