@@ -49,7 +49,7 @@ module.exports = class extends Generator {
 
   writing() {
     var self = this;
-    remote('humpbackdev', 'humpback', 'v1.12', function(err, extractPath) {
+    remote('humpbackdev', 'humpback', 'v1.13', function(err, extractPath) {
       self.fs.copy(extractPath, self.destinationPath('./'));
       self.fs.copy(extractPath + '/.ahoy', self.destinationPath('.ahoy'));
       self.fs.copy(extractPath + '/.ahoy.yml', self.destinationPath('.ahoy.yml'));
@@ -59,7 +59,7 @@ module.exports = class extends Generator {
         self.props
       );
       self.fs.copyTpl(
-        self.templatePath('site.ahoy.yml'),
+        self.templatePath('_site.ahoy.yml'),
         self.destinationPath('.ahoy/site.ahoy.yml'),
         self.props
       );
@@ -181,11 +181,6 @@ module.exports = class extends Generator {
       this.props
     );
     this.fs.copyTpl(
-      this.templatePath('scripts'),
-      this.destinationPath('scripts'),
-      this.props
-    );
-    this.fs.copyTpl(
       this.templatePath('settings'),
       this.destinationPath('settings'),
       this.props
@@ -203,11 +198,6 @@ module.exports = class extends Generator {
     this.fs.copy(
       this.templatePath('config-htaccess'),
       this.destinationPath('config/sync/.htaccess')
-    );
-    this.fs.copyTpl(
-      this.templatePath('_humpback_local_install.sh'),
-      this.destinationPath('scripts/' + this.props.appName + '_local_install.sh'),
-      this.props
     );
     this.fs.copyTpl(
       this.templatePath('circleci/site'),

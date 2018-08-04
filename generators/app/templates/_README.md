@@ -26,7 +26,7 @@ Once created your containers; you should prepare your local site.
 Generate local settings file:
 
 ```bash
-./scripts/local_settings.sh
+ahoy site local-settings
 ```
 
 Prepare the local site:
@@ -39,7 +39,7 @@ npm install
 Install the local site
 
 ```bash
-./scripts/<%= appName %>_local_install.sh
+ahoy site install
 ```
 
 ### Site UUID.
@@ -49,7 +49,7 @@ Site uuid can be found in the installation script. You should create a variable 
 In order to run behat tests; you should execute:
 
 ```bash
-./scripts/local_behat.sh
+ahoy site behat
 ```
 
 ### Build Environment
@@ -98,6 +98,7 @@ It's a reverse proxy usually used in production. It's bundled here for situation
 ## Mailhog
 
 To see the the mailhog UI, run `ahoy docker mailhog-url` and access that url from the browser. Your new messages will appear there.
+In order to send your emails from Drupal to mailhog you have two choices: using default sendmail configuration or using SMTP. If you decide for SMTP, you should set the mailhog host and port (mailhog:1025).
 
 ## Ahoy commands
 
