@@ -54,7 +54,7 @@ commands:
       SITE_UUID="<%= siteUuid %>"
       ahoy drush cc drush
       echo "Installing..."
-      ahoy drush site install <%= appName %> --account-pass=admin -y
+      ahoy drush site-install <%= appName %> --account-pass=admin -y
       echo "Set site uuid..."
       ahoy drush config-set "system.site" uuid "$SITE_UUID" -y
       echo "Importing config..."
