@@ -77,6 +77,6 @@ commands:
     usage: Setup site
     cmd: |
         ahoy site local-settings
-        composer install
+        ahoy composer install
         ahoy site install
 
