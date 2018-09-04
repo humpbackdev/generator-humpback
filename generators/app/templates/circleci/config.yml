@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: tbfisher/drupal-nginx:php-7.1.x
+      - image: kporras07/docker-drupal-nginx:php-7.2.x
       - image: selenium/standalone-chrome-debug:3.6.0
       - image: mariadb:5.5
         environment:
@@ -62,12 +62,12 @@ jobs:
           name: Behat Testing
           command: |
             /etc/init.d/nginx start > nginx.log &
-            /etc/init.d/php7.1-fpm start > php7.1-fpm.log &
+            /etc/init.d/php7.2-fpm start > php7.2-fpm.log &
             ./vendor/bin/behat -p circle
 
   deploy:
     docker:
-      - image: tbfisher/drupal-nginx:php-7.1.x
+      - image: kporras07/docker-drupal-nginx:php-7.2.x
     working_directory: /var/www/<%= appName %>
     steps:
       - checkout
@@ -113,7 +113,7 @@ jobs:
             terminus drush <%= dashedAppName %>.dev -- cr
   deploy-test:
     docker:
-      - image: tbfisher/drupal-nginx:php-7.1.x
+      - image: kporras07/docker-drupal-nginx:php-7.2.x
     working_directory: /var/www/<%= appName %>
     steps:
       - run:
@@ -131,7 +131,7 @@ jobs:
             terminus drush <%= dashedAppName %>.test -- cr
   deploy-live:
     docker:
-      - image: tbfisher/drupal-nginx:php-7.1.x
+      - image: kporras07/docker-drupal-nginx:php-7.2.x
     working_directory: /var/www/<%= appName %>
     steps:
       - run:
