@@ -22,8 +22,8 @@
   "require-dev": {
     "TestDrupal/BehatExtension": "dev-update",
     "drush/drush": "~9.0",
-    "squizlabs/php_codesniffer": "2.5.1",
-    "drupal/coder": "8.2.5",
+    "squizlabs/php_codesniffer": "^2.8",
+    "drupal/coder": "^8.2",
     "behat/behat": "3.4.0",
     "drupal/console": "~1.0"
   },
