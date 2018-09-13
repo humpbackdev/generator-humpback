@@ -2,3 +2,4 @@
 
 ## Change value as necessary.
 VIRTUAL_HOST=<%= appName %>.docker
+CONTAINER_UID=1000
