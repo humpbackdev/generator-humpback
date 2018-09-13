@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Custom context.
@@ -9,6 +10,7 @@
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Mink\Exception;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Mink\Exception\ElementNotFoundException;
 
 /**
  * Defines application features from the specific context.
@@ -124,7 +126,6 @@ class FeatureContext extends RawDrupalContext {
     return $text;
   }
 
-
   /**
    * Reload Solr Core.
    *
@@ -156,7 +157,7 @@ class FeatureContext extends RawDrupalContext {
         }
       }
     }
-    throw new \Behat\Mink\Exception\ElementNotFoundException($this->getSession(), $content, 'xpath', $expression);
+    throw new ElementNotFoundException($this->getSession(), $content, 'xpath', $expression);
   }
 
   /**
@@ -199,7 +200,7 @@ class FeatureContext extends RawDrupalContext {
         return;
       }
     }
-    throw new \Behat\Mink\Exception\ElementNotFoundException($this->getSession(), $type . ' form item', 'label', $label);
+    throw new ElementNotFoundException($this->getSession(), $type . ' form item', 'label', $label);
   }
 
   /**
@@ -324,7 +325,7 @@ class FeatureContext extends RawDrupalContext {
     $selector = '#' . $select . ' > option[value="' . $option . '"]';
     $results = $element->findAll('css', $selector);
     if (count($results)) {
-      throw New \Exception('Option ' . $option . ' was found in select ' . $select);
+      throw new \Exception('Option ' . $option . ' was found in select ' . $select);
     }
   }
 
@@ -338,7 +339,7 @@ class FeatureContext extends RawDrupalContext {
     $selector = '#' . $select . ' > option[value="' . $option . '"]';
     $results = $element->findAll('css', $selector);
     if (count($results) === 0) {
-      throw New \Exception('Option ' . $option . ' was not found in select ' . $select);
+      throw new \Exception('Option ' . $option . ' was not found in select ' . $select);
     }
   }
 

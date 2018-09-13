@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Secret configuration settings for the site.
