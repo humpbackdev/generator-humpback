@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Javascript context.
- */
-
 namespace Devinci\DevinciExtension\Context;
 
 use Drupal\DrupalExtension\Context\RawDrupalContext;
