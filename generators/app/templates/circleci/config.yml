@@ -147,6 +147,76 @@ jobs:
             terminus drush <%= dashedAppName %>.live -- updb -y
             terminus drush <%= dashedAppName %>.live -- cim -y
             terminus drush <%= dashedAppName %>.live -- cr
+
+  deploy-multidev:
+    docker:
+      - image:kporras07/docker-drupal-nginx:php-7.2.x
+    working_directory: /var/www/<%= appName %>
+    steps:
+      - checkout
+      - run:
+          name: Install Composer and terminus
+          command: |
+            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+            php -r "copy('https://composer.github.io/installer.sig', 'composer-setup.sig');" && \
+            php -r "if (hash_file('SHA384', 'composer-setup.php') === trim(file_get_contents('composer-setup.sig'))) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
+            php composer-setup.php && \
+            php -r "unlink('composer-setup.php');"
+            mv composer.phar /usr/bin/composer
+            mkdir $HOME/terminus && cd $HOME/terminus
+            curl -O https://raw.githubusercontent.com/pantheon-systems/terminus-installer/master/builds/installer.phar && php installer.phar install
+            terminus auth:login --machine-token=$PANTHEON_TOKEN
+      - run: composer install
+      - run:
+          name: Install ahoy
+          command: |
+            apt-get update -y && apt-get install wget -y
+            wget -q https://github.com/devinci-code/ahoy/releases/download/1.1.0/ahoy-`uname -s`-amd64 -O /usr/local/bin/ahoy && chmod +x /usr/local/bin/ahoy
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - ""
+      - run:
+          name: Create multidev environment
+          command: |
+            NEWBRANCH=$CIRCLE_BRANCH
+            LENGTH=${#NEWBRANCH}
+            if [ LENGTH > 10 ] ; then NEWBRANCH=${NEWBRANCH:8:9} ; fi
+            NEWBRANCH=${NEWBRANCH//-/}
+            NEWBRANCH=${NEWBRANCH,,}
+            terminus multidev:create <%= dashedAppName %>.live $NEWBRANCH || true
+      - run:
+          name: Deploy
+          command: |
+            NEWBRANCH=$CIRCLE_BRANCH
+            LENGTH=${#NEWBRANCH}
+            if [ LENGTH > 10 ] ; then NEWBRANCH=${NEWBRANCH:8:9} ; fi
+            NEWBRANCH=${NEWBRANCH//-/}
+            NEWBRANCH=${NEWBRANCH,,}
+            # @TODO: Configure git.
+            git config --global user.email "change-me@change-me.com"
+            git config --global user.name "Change me"
+            echo 'Host *' >> /root/.ssh/config
+            echo '   StrictHostKeyChecking no' >> /root/.ssh/config
+            ahoy deploy $NEWBRANCH "Auto deploy triggered from master branch"
+      - run:
+          name: Deploy commands
+          command: |
+            NEWBRANCH=$CIRCLE_BRANCH
+            LENGTH=${#NEWBRANCH}
+            if [ LENGTH > 10 ] ; then NEWBRANCH=${NEWBRANCH:8:9} ; fi
+            NEWBRANCH=${NEWBRANCH//-/}
+            NEWBRANCH=${NEWBRANCH,,}
+            terminus drush <%= dashedAppName %>.$NEWBRANCH -- cc drush
+            terminus drush <%= dashedAppName %>.$NEWBRANCH -- sqlsan -y
+            terminus drush <%= dashedAppName %>.$NEWBRANCH -- updb -y
+            terminus drush <%= dashedAppName %>.$NEWBRANCH -- en -y master
+            terminus drush <%= dashedAppName %>.$NEWBRANCH -- master-scope dev -y
+            terminus drush <%= dashedAppName %>.$NEWBRANCH -- master-execute -y
+            terminus drush <%= dashedAppName %>.$NEWBRANCH -- fra -y
+            terminus drush <%= dashedAppName %>.$NEWBRANCH -- cc all
+            terminus lock:enable <%= dashedAppName %>.$NEWBRANCH -- $PANTHEON_WEB_AUTH_USER $PANTHEON_WEB_AUTH_PASS
+            echo "If everything worked, go to http://$NEWBRANCH-<%= dashedAppName %>.pantheonsite.io"
 workflows:
   version: 2
   build-deploys:
@@ -158,6 +228,17 @@ workflows:
           filters:
             branches:
               only: master
+      - deploy-multidev-hold:
+          type: approval
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - /feature\/.*/
+      - deploy-multidev:
+          requires:
+            - deploy-multidev-hold
       - deploy-test:
           requires:
             - deploy
