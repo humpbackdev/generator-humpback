@@ -100,6 +100,9 @@ It's a reverse proxy usually used in production. It's bundled here for situation
 To see the the mailhog UI, run `ahoy docker mailhog-url` and access that url from the browser. Your new messages will appear there.
 In order to send your emails from Drupal to mailhog you have two choices: using default sendmail configuration or using SMTP. If you decide for SMTP, you should set the mailhog host and port (mailhog:1025).
 
+## Blackfire
+This tool also contains the Blackfire profiling tool, to configure it please your server id and server token into the `env` file
+
 ## Ahoy commands
 
 Some helpful commands are included using useful ahoy cli utility. In order to use them, you must install ahoy (https://github.com/ahoy-cli/ahoy) and then `ahoy help`
