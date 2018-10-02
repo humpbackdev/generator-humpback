@@ -82,5 +82,8 @@ commands:
   lighthouse:
     usage: Run lighthouse
     cmd: |
-        curl -X POST -H "Content-Type: application/json" -H "X-API-KEY: abc123" --data '{"output": "html", "url": "http://nginx"}' http://localhost:8080/ci > ./lighthouse.html
+        APP_NAME="<%= appName %>"
+        SITE_URL="http://${APP_NAME}_nginx_1.humpback_proxy"
+        ahoy docker lighthouse-up && sleep 1
+        curl -X POST -H "Content-Type: application/json" -H "X-API-KEY: abc123" --data '{"output": "html", "url": "'$SITE_URL$1'"}' http://localhost:8080/ci > ./lighthouse.html
         echo 'Report saved at ./lighthouse.html'

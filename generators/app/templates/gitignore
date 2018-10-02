@@ -6,6 +6,9 @@
 *.tgz
 node_modules
 
+# Lighthouse output
+lighthouse.html
+
 # Builds
 web/*
 !web/.gitkeep
