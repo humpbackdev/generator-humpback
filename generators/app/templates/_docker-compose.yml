@@ -152,6 +152,7 @@ services:
       - 'traefik.frontend.rule=Host:mailhog.${VIRTUAL_HOST-localhost}'
       - 'traefik.docker.network=humpback_proxy'
       - 'traefik.port=8025'
+
   blackfire:
     image: blackfire/blackfire:1.18.0
     environment:
