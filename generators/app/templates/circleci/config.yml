@@ -217,14 +217,11 @@ jobs:
             if [ LENGTH > 10 ] ; then NEWBRANCH=${NEWBRANCH:8:9} ; fi
             NEWBRANCH=${NEWBRANCH//-/}
             NEWBRANCH=${NEWBRANCH,,}
-            terminus drush <%= dashedAppName %>.$NEWBRANCH -- cc drush
+            terminus drush <%= dashedAppName %>.$NEWBRANCH -- cr
             terminus drush <%= dashedAppName %>.$NEWBRANCH -- sqlsan -y
             terminus drush <%= dashedAppName %>.$NEWBRANCH -- updb -y
-            terminus drush <%= dashedAppName %>.$NEWBRANCH -- en -y master
-            terminus drush <%= dashedAppName %>.$NEWBRANCH -- master-scope dev -y
-            terminus drush <%= dashedAppName %>.$NEWBRANCH -- master-execute -y
-            terminus drush <%= dashedAppName %>.$NEWBRANCH -- fra -y
-            terminus drush <%= dashedAppName %>.$NEWBRANCH -- cc all
+            terminus drush <%= dashedAppName %>.$NEWBRANCH -- cim -y
+            terminus drush <%= dashedAppName %>.$NEWBRANCH -- cr
             terminus lock:enable <%= dashedAppName %>.$NEWBRANCH -- $PANTHEON_WEB_AUTH_USER $PANTHEON_WEB_AUTH_PASS
             echo "If everything worked, go to http://$NEWBRANCH-<%= dashedAppName %>.pantheonsite.io"
 workflows:
