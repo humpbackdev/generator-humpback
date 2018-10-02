@@ -4,8 +4,8 @@
  * CircleCI Drush Aliases.
  */
 
-$aliases['<%= dashedAppName %>.dev'] = array(
-  'uri' => '<%= dashedAppName %>.dev',
+$aliases['<%= dashedAppName %>.local'] = array(
+  'uri' => '<%= dashedAppName %>.local',
   'root' => '/var/www/<%= appName %>/web',
 );
 
