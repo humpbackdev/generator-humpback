@@ -151,6 +151,12 @@ services:
       - 'traefik.frontend.rule=Host:mailhog.${VIRTUAL_HOST-localhost}'
       - 'traefik.docker.network=humpback_proxy'
       - 'traefik.port=8025'
+  lighthouse:
+    image: kporras07/lighthouse-ci:nonheadless
+    networks:
+      - internal
+    ports:
+      - "8080:8080"
 volumes:
   <%= appName %>_database: {}
 networks:

@@ -4,6 +4,7 @@ jobs:
     docker:
       - image: kporras07/docker-drupal-nginx:php-7.2.x
       - image: selenium/standalone-chrome-debug:3.6.0
+      - image: kporras07/lighthouse-ci:nonheadless
       - image: mariadb:5.5
         environment:
           MYSQL_DATABASE: drupal
@@ -11,7 +12,7 @@ jobs:
     working_directory: /var/www/<%= appName %>
     steps:
       - run: apt-get update -y && apt-get install python -y
-      - run: echo 127.0.0.1 <%= dashedAppName %>.dev | tee -a /etc/hosts
+      - run: echo 127.0.0.1 <%= dashedAppName %>.local | tee -a /etc/hosts
       - checkout
       - restore_cache:
           keys:
@@ -64,6 +65,14 @@ jobs:
             /etc/init.d/nginx start > nginx.log &
             /etc/init.d/php7.2-fpm start > php7.2-fpm.log &
             ./vendor/bin/behat -p circle
+      - run:
+          name: Lighthouse
+          command: |
+            mkdir /tmp/lighthouse
+            curl -X POST -H "Content-Type: application/json" -H "X-API-KEY: abc123" --data '{"output": "html", "url": "http://<%= dashedAppName %>.local"}' http://localhost:8080/ci > /tmp/lighthouse/output.html
+      - store_artifacts:
+          path: /tmp/lighthouse
+          destination: lighthouse
 
   deploy:
     docker:

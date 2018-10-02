@@ -79,4 +79,8 @@ commands:
         ahoy site local-settings
         ahoy composer install
         ahoy site install
-
+  lighthouse:
+    usage: Run lighthouse
+    cmd: |
+        curl -X POST -H "Content-Type: application/json" -H "X-API-KEY: abc123" --data '{"output": "html", "url": "http://nginx"}' http://localhost:8080/ci > ./lighthouse.html
+        echo 'Report saved at ./lighthouse.html'
