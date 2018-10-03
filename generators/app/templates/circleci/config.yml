@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: kporras07/docker-drupal-nginx:php-7.2.x
+      - image: kporras07/docker-drupal-nginx:php-7.2.x-backstop
       - image: selenium/standalone-chrome-debug:3.6.0
       - image: kporras07/lighthouse-ci:nonheadless
       - image: mariadb:5.5
@@ -59,6 +59,14 @@ jobs:
             ./node_modules/.bin/gulp phplint
             ./node_modules/.bin/gulp drupalcs
             ./node_modules/.bin/gulp eslint
+      - run:
+          name: Backstop
+          command: |
+            backstop reference
+            backstop test
+      - store_artifacts:
+          path: ./backstop_data
+          destination: backstop
       - run:
           name: Behat Testing
           command: |
@@ -159,7 +167,7 @@ jobs:
 
   deploy-multidev:
     docker:
-      - image:kporras07/docker-drupal-nginx:php-7.2.x
+      - image: kporras07/docker-drupal-nginx:php-7.2.x
     working_directory: /var/www/<%= appName %>
     steps:
       - checkout
@@ -174,14 +182,15 @@ jobs:
             mv composer.phar /usr/bin/composer
             mkdir $HOME/terminus && cd $HOME/terminus
             curl -O https://raw.githubusercontent.com/pantheon-systems/terminus-installer/master/builds/installer.phar && php installer.phar install
+            ln -s $HOME/terminus/vendor/bin/terminus /usr/bin/terminus
             terminus auth:login --machine-token=$PANTHEON_TOKEN
+            cd /var/www/<%= appName %>
       - run: composer install
       - run:
           name: Install ahoy
           command: |
             apt-get update -y && apt-get install wget -y
-            wget -q https://github.com/devinci-code/ahoy/releases/download/1.1.0/ahoy-`uname -s`-amd64 -O /usr/local/bin/ahoy && chmod +x /usr/local/bin/ahoy
-      - checkout
+            wget -q https://github.com/devinci-code/ahoy/releases/download/2.0.0/ahoy-`uname -s`-amd64 -O /usr/local/bin/ahoy && chmod +x /usr/local/bin/ahoy
       - add_ssh_keys:
           fingerprints:
             # @TODO: Add ssh_key fingerprint here.
