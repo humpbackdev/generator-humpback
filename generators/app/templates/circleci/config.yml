@@ -18,14 +18,6 @@ jobs:
           keys:
             - npm-cache-{{ checksum "package.json" }}
             - composer-cache-{{ checksum "composer.lock" }}
-      - run:
-          name: Install Node 6
-          command: |
-            curl "https://deb.nodesource.com/setup_6.x" -o "setup_6.x"
-            chmod +x setup_6.x
-            ./setup_6.x
-            rm setup_6.x
-            apt-get install nodejs -y
       - run: npm install
       - save_cache:
          key: npm-cache-{{ checksum "package.json" }}
