@@ -41,6 +41,10 @@ Drupal is a registered trademark of Dries Buytaert.
 
 Docker and the Docker logo are trademarks or registered trademarks of Docker, Inc. in the United States and/or other countries. Docker, Inc. and other parties may also have trademark rights in other terms used herein.
 
+## Versioning
+
+This project makes use of the "Semantic versioning" standard to name each release, if you want more information about it take a look at the [official documentation of the standard](https://semver.org/)
+
 ## License
 
 GPL-3.0 © Estudio Manatí S.A.
