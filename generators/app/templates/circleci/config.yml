@@ -101,6 +101,13 @@ jobs:
             # @TODO: Add ssh_key fingerprint here.
             - ""
       - run:
+          name: Install and login terminus
+          command: |
+            mkdir terminus && cd terminus
+            curl -O https://raw.githubusercontent.com/pantheon-systems/terminus-installer/master/builds/installer.phar && php installer.phar install
+            ln -s /var/www/<%= appName %>/terminus/vendor/bin/terminus /usr/bin/terminus
+            terminus auth:login --machine-token=$PANTHEON_TOKEN
+      - run:
           name: Deploy
           command: |
             # @TODO: Configure git.
@@ -108,15 +115,11 @@ jobs:
             git config --global user.name ""
             echo 'Host *' >> /root/.ssh/config
             echo '   StrictHostKeyChecking no' >> /root/.ssh/config
+            terminus connection:set  <%= dashedAppName %>.dev git
             ahoy site deploy master "Auto deploy triggered from master branch"
-      - run:
-          name: Install and login terminus
-          command: |
-            mkdir terminus && cd terminus
-            curl -O https://raw.githubusercontent.com/pantheon-systems/terminus-installer/master/builds/installer.phar && php installer.phar install
-            ln -s /var/www/<%= appName %>/terminus/vendor/bin/terminus /usr/bin/terminus
-            terminus auth:login --machine-token=$PANTHEON_TOKEN
+            terminus connection:set  <%= dashedAppName %>.dev sftp
             terminus drush <%= dashedAppName %>.dev -- si <%= appName %> --account-pass=admin -y
+            terminus connection:set  <%= dashedAppName %>.dev git
             terminus drush <%= dashedAppName %>.dev -- config-set "system.site" uuid "$SITE_UUID" -y
             terminus drush <%= dashedAppName %>.dev -- cim -y
             terminus drush <%= dashedAppName %>.dev -- cr
