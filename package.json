@@ -1,6 +1,6 @@
 {
   "name": "generator-humpback",
-  "version": "0.0.24",
+  "version": "1.0.0",
   "description": "Generate a Drupal project using humpback",
   "homepage": "https://humpbackdev.com",
   "author": {
