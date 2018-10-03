@@ -43,7 +43,7 @@ Docker and the Docker logo are trademarks or registered trademarks of Docker, In
 
 ## Versioning
 
-This project makes use of the "Semantic versioning" standard to name each release, if you want more information about it take a look of the [official documentation of the standard](https://semver.org/)
+This project makes use of the "Semantic versioning" standard to name each release, if you want more information about it take a look at the [official documentation of the standard](https://semver.org/)
 
 ## License
 
