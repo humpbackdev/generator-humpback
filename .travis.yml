@@ -7,6 +7,7 @@ before_script:
   - npm install -g yo
   - npm install
   - npm link
+  - curl https://raw.githubusercontent.com/CircleCI-Public/circleci-cli/master/install.sh --fail --show-error | bash
 before_deploy:
   - cd $TRAVIS_BUILD_DIR
   - npm install -g nsp
@@ -14,6 +15,7 @@ before_deploy:
 script:
   - 'mkdir $HOME/humpbacktest && cd $HOME/humpbacktest'
   - 'yo humpback --humanName="humpbacktest" --appName="humpbacktest" --skip-install'
+  - circleci config validate
 deploy:
   provider: npm
   email: kporras07@gmail.com
