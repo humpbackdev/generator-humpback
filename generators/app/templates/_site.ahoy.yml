@@ -18,6 +18,7 @@ commands:
       cd ../
       composer install --no-dev --ignore-platform-reqs
       find ./web/modules/contrib/ -name ".git" -exec rm -rf {} \;
+      find ./web/themes/contrib/ -name ".git" -exec rm -rf {} \;
       find ./web/sites/all/assets/vendor/ -name ".git" -exec rm -rf {} \;
       find ./web/libraries/ -name ".git" -exec rm -rf {} \;
       find ./web/sites/all/libraries/ -name ".git" -exec rm -rf {} \;
