@@ -95,9 +95,15 @@ jobs:
             php composer-setup.php && \
             php -r "unlink('composer-setup.php');"
             mv composer.phar /usr/bin/composer
+       - run:
+          name: install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-am
+          environment:
+            DOCKERIZE_VERSION: v0.3.0
       - run:
           name: Import db
           command: |
+            dockerize -wait tcp://localhost:3306 -timeout 2m
             cd /var/www/<%= appName %>/web
             cat ../export.sql | ../vendor/bin/drush sqlc
       - run:
