@@ -97,7 +97,7 @@ jobs:
             mv composer.phar /usr/bin/composer
        - run:
           name: install dockerize
-          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-am
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
           environment:
             DOCKERIZE_VERSION: v0.3.0
       - run:
@@ -256,7 +256,7 @@ jobs:
             git config --global user.name "Change me"
             echo 'Host *' >> /root/.ssh/config
             echo '   StrictHostKeyChecking no' >> /root/.ssh/config
-            ahoy deploy $NEWBRANCH "Auto deploy triggered from master branch"
+            ahoy site deploy $NEWBRANCH "Auto deploy triggered from master branch"
       - run:
           name: Deploy commands
           command: |
