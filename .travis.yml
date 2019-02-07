@@ -3,9 +3,10 @@ node_js:
   - 8
   - 7
   - 6
+before_install:
+  - npm install -g npm@latest
 before_script:
   - npm install -g yo
-  - npm update -g npm
   - npm install
   - npm link
   - curl https://github.com/CircleCI-Public/circleci-cli/releases/download/v0.1.2933/circleci-cli_0.1.2933_linux_amd64.tar.gz -LO
