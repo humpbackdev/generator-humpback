@@ -1,6 +1,6 @@
 {
   "name": "generator-humpback",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Generate a Drupal project using humpback",
   "homepage": "https://humpbackdev.com",
   "author": {
@@ -20,18 +20,17 @@
     "yeoman-generator"
   ],
   "devDependencies": {
-    "yeoman-test": "^1.6.0",
-    "yeoman-assert": "^3.0.0",
-    "nsp": "^3.2.1",
     "eslint": "^4.1.0",
-    "prettier": "^1.7.0",
-    "husky": "^0.14.3",
-    "lint-staged": "^7.1.0",
     "eslint-config-prettier": "^2.4.0",
-    "eslint-plugin-prettier": "^2.2.0",
     "eslint-config-xo": "^0.22.2",
+    "eslint-plugin-prettier": "^2.2.0",
+    "husky": "^0.14.3",
     "jest": "^22.4.3",
-    "jest-cli": "^22.4.3"
+    "jest-cli": "^24.1.0",
+    "lint-staged": "^7.1.0",
+    "prettier": "^1.7.0",
+    "yeoman-assert": "^3.0.0",
+    "yeoman-test": "^1.6.0"
   },
   "dependencies": {
     "chalk": "^2.1.0",
@@ -48,7 +47,7 @@
     "testEnvironment": "node"
   },
   "scripts": {
-    "prepublish": "nsp check",
+    "prepublish": "npm audit --audit-level high",
     "pretest": "eslint .",
     "precommit": "lint-staged",
     "test": "jest"
