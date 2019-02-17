@@ -18,6 +18,7 @@ before_deploy:
 script:
   - 'mkdir $HOME/humpbacktest && cd $HOME/humpbacktest'
   - 'yo humpback --humanName="humpbacktest" --appName="humpbacktest" --skip-install'
+  - cat .circleci/config.yml
   - $HOME/circleci config validate
 deploy:
   provider: npm
