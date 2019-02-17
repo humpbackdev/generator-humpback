@@ -62,6 +62,27 @@ commands:
       if [ -f ./config/sync/core.extension.yml ] ; then ahoy drush cim -y ; fi
       echo "Cleaning cache..."
       ahoy drush cr
+  install-from-db:
+    usage: Setup site using DB backup
+    cmd: |
+      if [ ! -f <%= appName %>.sql.gz ]; then
+        wget `terminus backup:get <%= appName %>.live --element=db` -O <%= appName %>.sql.gz
+      fi
+      ahoy drush cr
+      echo "Drop Database..."
+      ahoy drush sql-drop -y
+      echo "Import database..."
+      gunzip -c <%= appName %>.sql.gz | ahoy drush sqlc
+      echo "Update database..."
+      ahoy drush updb -y
+      echo "Importing config..."
+      ahoy drush cim -y
+      echo "Cleaning cache..."
+      ahoy drush cr
+      echo "Sanitizing database..."
+      ahoy drush sqlsan -y
+      echo "Generating an admin one time login link..."
+      ahoy drush uli
   local-settings:
     usage: Generate local settings
     cmd: |

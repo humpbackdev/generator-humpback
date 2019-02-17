@@ -137,8 +137,7 @@ jobs:
       - run:
           name: Install ahoy
           command: |
-            apt-get update -y && apt-get install wget -y
-            wget -q https://github.com/ahoy-cli/ahoy/releases/download/2.0.0/ahoy-bin-`uname -s`-amd64 -O /usr/local/bin/ahoy && chmod +x /usr/local/bin/ahoy
+            curl -L https://github.com/ahoy-cli/ahoy/releases/download/2.0.0/ahoy-bin-`uname -s`-amd64 --output /usr/local/bin/ahoy && chmod +x /usr/local/bin/ahoy
       - checkout
       - add_ssh_keys:
           fingerprints:
@@ -228,8 +227,7 @@ jobs:
       - run:
           name: Install ahoy
           command: |
-            apt-get update -y && apt-get install wget -y
-            wget -q https://github.com/devinci-code/ahoy/releases/download/2.0.0/ahoy-`uname -s`-amd64 -O /usr/local/bin/ahoy && chmod +x /usr/local/bin/ahoy
+            curl -L https://github.com/ahoy-cli/ahoy/releases/download/2.0.0/ahoy-bin-`uname -s`-amd64 --output /usr/local/bin/ahoy && chmod +x /usr/local/bin/ahoy
       - add_ssh_keys:
           fingerprints:
             # @TODO: Add ssh_key fingerprint here.

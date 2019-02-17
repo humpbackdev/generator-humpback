@@ -3,6 +3,8 @@ node_js:
   - 8
   - 7
   - 6
+before_install:
+  - npm install -g npm@latest
 before_script:
   - npm install -g yo
   - npm install
@@ -13,7 +15,6 @@ before_script:
   - chmod +x $HOME/circleci
 before_deploy:
   - cd $TRAVIS_BUILD_DIR
-  - npm install -g nsp
   - npm install
 script:
   - 'mkdir $HOME/humpbacktest && cd $HOME/humpbacktest'
