@@ -8,6 +8,12 @@ const uuidV4 = require('uuid/v4');
 const remote = require('yeoman-remote');
 
 module.exports = class extends Generator {
+  constructor(args, opts) {
+    super(args, opts);
+    this.option('humanName');
+    this.option('appName');
+  }
+
   async prompting() {
     // Have Yeoman greet the user.
     this.log(
@@ -37,6 +43,12 @@ module.exports = class extends Generator {
     }
 
     this.props = await this.prompt(prompts);
+    if (this.options['human-name']) {
+      this.props.humanName = this.options['human-name'];
+    }
+    if (this.options['app-name']) {
+      this.props.appName = this.options['app-name'];
+    }
     this.props.dashedAppName = this.props.appName.replace('_', '-');
 
     this.props.siteUuid = uuidV4();
