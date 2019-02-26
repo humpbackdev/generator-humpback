@@ -8,7 +8,7 @@ const uuidV4 = require('uuid/v4');
 const remote = require('yeoman-remote');
 
 module.exports = class extends Generator {
-  prompting() {
+  async prompting() {
     // Have Yeoman greet the user.
     this.log(
       yosay('Welcome to the great ' + chalk.red('generator-humpback') + ' generator!')
@@ -18,7 +18,7 @@ module.exports = class extends Generator {
 
     if (!this.options.humanName) {
       prompts.push({
-        type: 'String',
+        type: 'input',
         name: 'humanName',
         message: 'How will you call your app?',
         default: 'Humpback'
@@ -27,7 +27,7 @@ module.exports = class extends Generator {
 
     if (!this.options.appName) {
       prompts.push({
-        type: 'String',
+        type: 'input',
         name: 'appName',
         message: "What's your app machine name?",
         default: function(props) {
@@ -36,15 +36,11 @@ module.exports = class extends Generator {
       });
     }
 
-    return this.prompt(prompts).then(props => {
-      this.props = [];
-      this.props.humanName = props.humanName ? props.humanName : this.options.humanName;
-      this.props.appName = props.appName ? props.appName : this.options.appName;
-      this.props.dashedAppName = this.props.appName.replace('_', '-');
+    this.props = await this.prompt(prompts);
+    this.props.dashedAppName = this.props.appName.replace('_', '-');
 
-      this.props.siteUuid = uuidV4();
-      this.props.coreVersion = '8.3.7';
-    });
+    this.props.siteUuid = uuidV4();
+    this.props.coreVersion = '8.3.7';
   }
 
   writing() {
