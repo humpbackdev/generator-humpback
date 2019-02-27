@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## Change value as necessary.
-VIRTUAL_HOST=<%= appName %>.docker
+VIRTUAL_HOST=<%= dashedAppName %>.docker
 CONTAINER_UID=1000
 PHP_POST_MAX_SIZE=100M
 PHP_UPLOAD_MAX_FILESIZE=100M

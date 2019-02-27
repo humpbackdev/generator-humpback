@@ -1,8 +1,7 @@
 language: node_js
 node_js:
+  - 10
   - 8
-  - 7
-  - 6
 before_install:
   - npm install -g npm@latest
 before_script:
@@ -18,7 +17,8 @@ before_deploy:
   - npm install
 script:
   - 'mkdir $HOME/humpbacktest && cd $HOME/humpbacktest'
-  - 'yo humpback --humanName="humpbacktest" --appName="humpbacktest" --skip-install'
+  - 'yo humpback --humanName="humpbacktest" --appName="humpbacktest"'
+  - npm audit | grep -E "(High | Critical)" -B3 -A10 ; CODE=$? ; if [ $CODE -eq 0 ] ; then echo "Vulnerabilities found" ; exit 1; fi
   - $HOME/circleci config validate
 deploy:
   provider: npm

@@ -52,14 +52,6 @@ jobs:
             ./node_modules/.bin/gulp drupalcs
             ./node_modules/.bin/gulp eslint
       - run:
-          name: Backstop
-          command: |
-            backstop reference
-            backstop test
-      - store_artifacts:
-          path: ./backstop_data
-          destination: backstop
-      - run:
           name: Behat Testing
           command: |
             /etc/init.d/nginx start > nginx.log &
@@ -73,6 +65,58 @@ jobs:
       - store_artifacts:
           path: /tmp/lighthouse
           destination: lighthouse
+      - run:
+          name: Export database
+          command: |
+            cd /var/www/<%= appName %>/web
+            ../vendor/bin/drush sql-dump --result-file=../export.sql
+      - persist_to_workspace:
+          root: /var/www/
+          paths: <%= appName %>
+
+  visual-regression:
+    docker:
+      - image: kporras07/docker-drupal-nginx:php-7.2.x-backstop
+      - image: mariadb:5.5
+        environment:
+          MYSQL_DATABASE: drupal
+          MYSQL_ROOT_PASSWORD: drupal
+    working_directory: /var/www/<%= appName %>
+    steps:
+      - attach_workspace:
+          at: /var/www
+      - run: echo 127.0.0.1 <%= dashedAppName %>.local | tee -a /etc/hosts
+      - run:
+          name: Install Composer
+          command: |
+            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+            php -r "copy('https://composer.github.io/installer.sig', 'composer-setup.sig');" && \
+            php -r "if (hash_file('SHA384', 'composer-setup.php') === trim(file_get_contents('composer-setup.sig'))) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
+            php composer-setup.php && \
+            php -r "unlink('composer-setup.php');"
+            mv composer.phar /usr/bin/composer
+      - run:
+          name: install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.3.0
+      - run:
+          name: Import db
+          command: |
+            dockerize -wait tcp://localhost:3306 -timeout 2m
+            cd /var/www/<%= appName %>/web
+            cat ../export.sql | ../vendor/bin/drush sqlc
+      - run:
+          name: Backstop
+          command: |
+            cp ./.circleci/<%= appName %> /etc/nginx/sites-available/default
+            /etc/init.d/nginx start > nginx.log &
+            /etc/init.d/php7.2-fpm start > php7.2-fpm.log &
+            backstop reference
+            backstop test
+      - store_artifacts:
+          path: ./backstop_data
+          destination: backstop
 
   deploy:
     docker:
@@ -231,6 +275,9 @@ workflows:
   build-deploys:
     jobs:
       - build
+      - visual-regression:
+          requires:
+            - build
       - deploy:
           requires:
             - build
