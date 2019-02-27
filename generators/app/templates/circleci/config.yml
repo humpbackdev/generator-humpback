@@ -140,9 +140,6 @@ jobs:
             curl -L https://github.com/ahoy-cli/ahoy/releases/download/2.0.0/ahoy-bin-`uname -s`-amd64 --output /usr/local/bin/ahoy && chmod +x /usr/local/bin/ahoy
       - checkout
       - add_ssh_keys:
-          fingerprints:
-            # @TODO: Add ssh_key fingerprint here.
-            - ""
       - run:
           name: Install and login terminus
           command: |
@@ -153,9 +150,8 @@ jobs:
       - run:
           name: Deploy
           command: |
-            # @TODO: Configure git.
-            git config --global user.email ""
-            git config --global user.name ""
+            git config --global user.email $GIT_EMAIL
+            git config --global user.name $GIT_NAME
             echo 'Host *' >> /root/.ssh/config
             echo '   StrictHostKeyChecking no' >> /root/.ssh/config
             terminus connection:set  <%= dashedAppName %>.dev git
@@ -229,9 +225,6 @@ jobs:
           command: |
             curl -L https://github.com/ahoy-cli/ahoy/releases/download/2.0.0/ahoy-bin-`uname -s`-amd64 --output /usr/local/bin/ahoy && chmod +x /usr/local/bin/ahoy
       - add_ssh_keys:
-          fingerprints:
-            # @TODO: Add ssh_key fingerprint here.
-            - ""
       - run:
           name: Create multidev environment
           command: |
@@ -249,9 +242,8 @@ jobs:
             if [ LENGTH > 10 ] ; then NEWBRANCH=${NEWBRANCH:8:9} ; fi
             NEWBRANCH=${NEWBRANCH//-/}
             NEWBRANCH=${NEWBRANCH,,}
-            # @TODO: Configure git.
-            git config --global user.email "change-me@change-me.com"
-            git config --global user.name "Change me"
+            git config --global user.email $GIT_EMAIL
+            git config --global user.name $GIT_NAME
             echo 'Host *' >> /root/.ssh/config
             echo '   StrictHostKeyChecking no' >> /root/.ssh/config
             ahoy site deploy $NEWBRANCH "Auto deploy triggered from master branch"
