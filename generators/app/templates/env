@@ -12,9 +12,9 @@ BLACKFIRE_SERVER_TOKEN=CHANGEME
 # You don't need to fill in these values here; they're listed here only as reference.
 # You need to setup these variables in CircleCI UI.
 GIT_ARTIFACT_REPO=
-GIT_EMAIL=
-GIT_NAME=
-PANTHEON_WEB_AUTH_USER=
-PANTHEON_WEB_AUTH_PASS=
-PANTHEON_TOKEN=
-SITE_UUID=<%= siteUuid %>
+#GIT_EMAIL=
+#GIT_NAME=
+#PANTHEON_WEB_AUTH_USER=
+#PANTHEON_WEB_AUTH_PASS=
+#PANTHEON_TOKEN=
+#SITE_UUID=<%= siteUuid %>
