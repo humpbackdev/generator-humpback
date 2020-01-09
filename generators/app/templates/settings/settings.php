@@ -39,4 +39,4 @@ if (file_exists(DRUPAL_ROOT . '/sites/default/settings.pantheon.php')) {
   include DRUPAL_ROOT . '/sites/default/settings.pantheon.php';
 }
 $settings['install_profile'] = '<%= appName %>';
-$config_directories['sync'] = 'sites/default/config/sync';
+$settings['config_sync_directory'] = 'sites/default/config/sync';

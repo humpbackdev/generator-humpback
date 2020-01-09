@@ -12,6 +12,7 @@ dependencies:
   - dblog
   - search
   - toolbar
+  - path
 themes:
   - bartik
   - seven
