@@ -21,7 +21,7 @@
   ],
   "devDependencies": {
     "eslint": "^5.14.0",
-    "eslint-config-prettier": "^2.4.0",
+    "eslint-config-prettier": "^6.11.0",
     "eslint-config-xo": "^0.22.2",
     "eslint-plugin-prettier": "^2.2.0",
     "husky": "^0.14.3",
