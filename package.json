@@ -37,7 +37,7 @@
     "https": "^1.0.0",
     "lodash": "^4.17.15",
     "tunnel-agent": "^0.6.0",
-    "uuid": "^3.1.0",
+    "uuid": "^8.0.0",
     "xml2js": "^0.4.19",
     "yeoman-generator": "^3.2.0",
     "yeoman-remote": "https://github.com/dharizza/yeoman-remote.git",
