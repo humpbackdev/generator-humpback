@@ -1,0 +1,114 @@
+ahoyapi: v2
+commands:
+  deploy:
+    usage: Deploy the site using ahoy
+    cmd: |
+      BRANCH=$1
+      MESSAGE=$2
+      REPO=$GIT_ARTIFACT_REPO
+      BUILDFOLDER=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1`
+      CLONEFOLDER=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1`
+      mv web $BUILDFOLDER
+      git clone --branch $BRANCH $REPO $CLONEFOLDER || git clone $REPO $CLONEFOLDER
+      cd $CLONEFOLDER
+      git branch $BRANCH ; git checkout $BRANCH
+      shopt -s extglob
+      rm -rf ./!(.git|.|..)
+      cd ../
+      composer install --no-dev --ignore-platform-reqs
+      find ./web/modules/contrib/ -name ".git" -exec rm -rf {} \;
+      find ./web/themes/contrib/ -name ".git" -exec rm -rf {} \;
+      find ./web/sites/all/assets/vendor/ -name ".git" -exec rm -rf {} \;
+      find ./web/libraries/ -name ".git" -exec rm -rf {} \;
+      find ./web/sites/all/libraries/ -name ".git" -exec rm -rf {} \;
+      cp -r web $CLONEFOLDER/web
+      mv vendor $CLONEFOLDER/
+      cp pantheon.yml $CLONEFOLDER/
+      cd $CLONEFOLDER
+      git add --all .
+      git commit -m "$MESSAGE"
+      git push origin $BRANCH
+      cd ../
+      rm -rf $CLONEFOLDER
+      rm -rf web
+      mv $BUILDFOLDER web
+      git checkout -- composer.lock
+      composer install --ignore-platform-reqs
+      git checkout -- composer.lock
+  behat:
+    usage: Run behat tests
+    cmd: |
+      if [ $# -eq 0 ]
+      then
+        ahoy docker exec cli "./vendor/bin/behat"
+      else
+        ahoy docker exec cli "./vendor/bin/behat ./tests/behat/features/$1.feature"
+      fi
+  console:
+    usage: Run console commands
+    cmd: |
+      ahoy docker exec cli "./vendor/bin/drupal $1"
+  install:
+    usage: Run install commands
+    cmd: |
+      SITE_UUID="<%= siteUuid %>"
+      ahoy drush cc drush
+      echo "Installing..."
+      ahoy drush site-install <%= appName %> --account-pass=admin -y
+      echo "Set site uuid..."
+      ahoy drush config-set "system.site" uuid "$SITE_UUID" -y
+      echo "Importing config..."
+      if [ -f ./config/sync/core.extension.yml ] ; then ahoy drush cim -y ; fi
+      echo "Cleaning cache..."
+      ahoy drush cr
+  install-from-db:
+    usage: Setup site using DB backup
+    cmd: |
+      if [ ! -f <%= appName %>.sql.gz ]; then
+        wget `terminus backup:get <%= appName %>.live --element=db` -O <%= appName %>.sql.gz
+      fi
+      ahoy drush cr
+      echo "Drop Database..."
+      ahoy drush sql-drop -y
+      echo "Import database..."
+      gunzip -c <%= appName %>.sql.gz | ahoy drush sqlc
+      echo "Update database..."
+      ahoy drush updb -y
+      echo "Importing config..."
+      ahoy drush cim -y
+      echo "Cleaning cache..."
+      ahoy drush cr
+      echo "Sanitizing database..."
+      ahoy drush sqlsan -y
+      echo "Generating an admin one time login link..."
+      ahoy drush uli
+  local-settings:
+    usage: Generate local settings
+    cmd: |
+      if [ ! -f ./settings/settings.local.php ]; then
+        echo "Creating ./settings/settings.local.php"
+        printf "<?php\n\n/**\n * @file\n * Local development settings.\n */\n\n\$config['system.performance']['css']['preprocess'] = FALSE;\n\$config['system.performance']['js']['preprocess'] = FALSE;\n\$settings['container_yamls'][] = DRUPAL_ROOT . '/sites/default/services.local.yml';\n\$settings['cache']['bins']['render'] = 'cache.backend.null';\n\$settings['cache']['bins']['dynamic_page_cache'] = 'cache.backend.null';\n\$settings['cache']['bins']['page'] = 'cache.backend.null';\n\$GLOBALS['_kint_settings']['maxLevels'] = 3;" > settings/settings.local.php
+      fi
+      if [ ! -f ./settings/settings.secret.php ]; then
+        echo "Creating ./settings/settings.secret.php"
+        printf "<?php\n\n/**\n * @file\n * Secret configuration settings for the site.\n */\n\n// Database.\n\$databases = array(\n  'default' => array(\n    'default' => array(\n      'database' => 'drupal',\n      'username' => 'drupal',\n      'password' => 'drupal',\n      'host' => 'db',\n      'driver' => 'mysql',\n    ),\n  ),\n);\n\n\$settings['hash_salt'] = 'local';\n" > settings/settings.secret.php
+      fi
+      if [ ! -f ./settings/services.local.yml ]; then
+        echo "Creating ./settings/services.local.yml"
+        printf "parameters:\n  http.response.debug_cacheability_headers: true\n  twig.config:\n    debug: true\n    auto_reload: true\n    cache: false\nservices:\n  cache.backend.null:\n    class: Drupal\Core\Cache\NullBackendFactory" > settings/services.local.yml
+      fi
+      echo "Complete.";
+  setup:
+    usage: Setup site
+    cmd: |
+        ahoy site local-settings
+        ahoy composer install
+        ahoy site install
+  lighthouse:
+    usage: Run lighthouse
+    cmd: |
+        APP_NAME="<%= appName %>"
+        SITE_URL="http://${APP_NAME}_nginx_1.humpback_proxy"
+        ahoy docker lighthouse-up && sleep 1
+        curl -X POST -H "Content-Type: application/json" -H "X-API-KEY: abc123" --data '{"output": "html", "url": "'$SITE_URL$1'"}' http://localhost:8080/ci > ./lighthouse.html
+        echo 'Report saved at ./lighthouse.html'
