@@ -30,9 +30,9 @@ module.exports = class extends Generator {
       },
       {
         type: 'list',
-        name: 'deployEnvironment',
+        name: 'deployEnv',
         message: 'Where your app will be deployed?',
-        choices: ['Pantheon', 'Platform.sh'],
+        choices: ['Pantheon', 'Platformsh'],
         default: ['Pantheon']
       }
     ]);
@@ -40,7 +40,7 @@ module.exports = class extends Generator {
     this.answers.dashedAppName = this.answers.appName.replace('_', '-');
     this.answers.siteUuid = uuidV4();
     this.answers.coreVersion = '8.8.0';
-    this.devEnvPath = 'deploy-environment/' + this.answers.deployEnvironment;
+    this.deployEnvPath = 'deploy-environment/' + this.answers.deployEnv;
   }
 
   configuring() {
@@ -92,30 +92,18 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    if (this.answers.deployEnvironment === 'Pantheon') {
+    if (this.answers.deployEnv === 'Pantheon') {
       this.fs.copy(
-        this.templatePath(this.devEnvPath + '/pantheon.yml'),
+        this.templatePath(this.deployEnvPath + '/pantheon.yml'),
         this.destinationPath('pantheon.yml')
-      );
-      // Get the pantheon settings from the repo.
-      remote(
-        'pantheon-systems',
-        'drops-8',
-        this.answers.coreVersion,
-        (error, extractPath) => {
-          this.fs.copy(
-            extractPath + '/sites/default/settings.pantheon.php',
-            this.destinationPath('settings/settings.pantheon.php')
-          );
-        }
       );
     } else {
       this.fs.copy(
-        this.templatePath(this.devEnvPath + '/platform'),
+        this.templatePath(this.deployEnvPath + '/platform'),
         this.destinationPath('.platform')
       );
       this.fs.copy(
-        this.templatePath(this.devEnvPath + '/platform.app.yaml'),
+        this.templatePath(this.deployEnvPath + '/platform.app.yaml'),
         this.destinationPath('.platform.app.yaml')
       );
       // Get the platfomsh settings from the repo.
@@ -128,31 +116,31 @@ module.exports = class extends Generator {
     }
     // Copy files from deploy-environment folder.
     this.fs.copyTpl(
-      this.templatePath(this.devEnvPath + '/circleci/site'),
+      this.templatePath(this.deployEnvPath + '/circleci/site'),
       this.destinationPath('.circleci/' + this.answers.appName),
       this.answers
     );
     this.fs.copyTpl(
-      this.templatePath(this.devEnvPath + '/circleci/site.aliases.drushrc.php'),
+      this.templatePath(this.deployEnvPath + '/circleci/site.aliases.drushrc.php'),
       this.destinationPath('.circleci/' + this.answers.appName + '.aliases.drushrc.php'),
       this.answers
     );
     this.fs.copyTpl(
-      this.templatePath(this.devEnvPath + '/circleci/config.yml'),
+      this.templatePath(this.deployEnvPath + '/circleci/config.yml'),
       this.destinationPath('.circleci/config.yml'),
       this.answers
     );
     this.fs.copy(
-      this.templatePath(this.devEnvPath + '/circleci/settings.secret.php'),
+      this.templatePath(this.deployEnvPath + '/circleci/settings.secret.php'),
       this.destinationPath('.circleci/settings.secret.php')
     );
     this.fs.copyTpl(
-      this.templatePath(this.devEnvPath + '/_site.ahoy.yml'),
+      this.templatePath(this.deployEnvPath + '/site.ahoy.yml'),
       this.destinationPath('.ahoy/site.ahoy.yml'),
       this.answers
     );
     this.fs.copyTpl(
-      this.templatePath(this.devEnvPath + '/_composer.json'),
+      this.templatePath(this.deployEnvPath + '/composer.json'),
       this.destinationPath('composer.json'),
       this.answers
     );
