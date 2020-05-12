@@ -20,7 +20,11 @@
     "kporras07/composer-symlinks": "dev-master",
     "drupal/core-recommended": "<%= coreVersion %>",
     "cweagans/composer-patches": "^1.6.5",
-    "platformsh/config-reader": "^2.3"
+    "drupal/redis": "^1.4",
+    "drupal/search_api_solr": "^3.9",
+    "drush/drush": "^9.7.1 | ^10.0.0",
+    "platformsh/config-reader": "^2.3",
+    "symfony/event-dispatcher": "4.3.4 as 3.4.35"
   },
   "require-dev": {
     "testdrupal/behatextension": "dev-update",

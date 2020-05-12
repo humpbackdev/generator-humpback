@@ -7,7 +7,7 @@
 name: 'app'
 
 # The runtime the application uses.
-type: 'php:7.2'
+type: 'php:7.4'
 
 # The relationships of the application with services or other applications.
 #
@@ -16,16 +16,11 @@ type: 'php:7.2'
 # side is in the form `<service name>:<endpoint name>`.
 relationships:
     database: 'db:mysql'
-    solrsearch: 'searchsolr:main'
     redis: 'cache:redis'
-
-# Add additional PHP extensions.
-runtime:
-    extensions:
-        - redis
+    solrsearch: 'search:main'
 
 # The size of the persistent disk of the application (in MB).
-disk: 8192
+disk: 2048
 
 # The 'mounts' describe writable, persistent filesystem mounts in the application.
 mounts:
@@ -54,9 +49,11 @@ build:
 
 # The hooks executed at various points in the lifecycle of the application.
 hooks:
-    # We install the platform CLI.
+    # The build hook runs after Composer to finish preparing up your code.
     build: |
+        set -e
         curl -sS https://platform.sh/cli/installer | php
+        bash install-redis.sh 5.2.2
     # The deploy hook runs after your application has been deployed and started.
     deploy: |
         set -e
@@ -66,7 +63,6 @@ hooks:
         drush -y updatedb
         drush -y config-import
         drush -y cache-rebuild
-
 # The configuration of app when it is exposed to the web.
 web:
     # Specific parameters for different URL prefixes.
@@ -130,17 +126,3 @@ crons:
     drupal:
         spec: '*/20 * * * *'
         cmd: 'cd web ; drush core-cron'
-    backup:
-        # Take a backup automatically every night at 3 am (UTC).
-        spec: '0 3 * * *'
-        cmd: |
-            if [ "$PLATFORM_BRANCH" = master ]; then
-                platform backup:create --yes --no-wait
-            fi
-    renewcert:
-        # Force a redeploy at 8 am (UTC) on the 14th and 28th of every month.
-        spec: '0 8 14,28 * *'
-        cmd: |
-            if [ "$PLATFORM_BRANCH" = master ]; then
-                platform redeploy --yes --no-wait
-            fi

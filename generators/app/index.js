@@ -106,15 +106,20 @@ module.exports = class extends Generator {
         this.templatePath(this.deployEnvPath + '/platform.app.yaml'),
         this.destinationPath('.platform.app.yaml')
       );
-      // Get the platfomsh settings from the repo.
-      remote('platformsh-templates', 'drupal8', 'master', (error, extractPath) => {
-        this.fs.copy(
-          extractPath + '/web/sites/default/settings.platformsh.php',
-          this.destinationPath('settings/settings.platformsh.php')
-        );
-      });
+      this.fs.copy(
+        this.templatePath(this.deployEnvPath + '/install-redis.sh'),
+        this.destinationPath('install-redis.sh')
+      );
+      this.fs.copy(
+        this.templatePath(this.deployEnvPath + '/settings/settings.platformsh.php'),
+        this.destinationPath('settings/settings.platformsh.php')
+      );
     }
     // Copy files from deploy-environment folder.
+    this.fs.copy(
+      this.templatePath(this.deployEnvPath + '/drush'),
+      this.destinationPath('drush')
+    );
     this.fs.copyTpl(
       this.templatePath(this.deployEnvPath + '/circleci/site'),
       this.destinationPath('.circleci/' + this.answers.appName),
@@ -185,15 +190,9 @@ module.exports = class extends Generator {
       this.destinationPath('.gitattributes')
     );
     this.fs.copy(this.templatePath('gitignore'), this.destinationPath('.gitignore'));
-    this.fs.copy(this.templatePath('web/gitkeep'), this.destinationPath('web/.gitkeep'));
-    this.fs.copy(
-      this.templatePath('files/gitkeep'),
-      this.destinationPath('files/.gitkeep')
-    );
-    this.fs.copy(
-      this.templatePath('patches/gitkeep'),
-      this.destinationPath('patches/.gitkeep')
-    );
+    this.fs.copy(this.templatePath('web'), this.destinationPath('web'));
+    this.fs.copy(this.templatePath('files'), this.destinationPath('files'));
+    this.fs.copy(this.templatePath('patches'), this.destinationPath('patches'));
     this.fs.copy(
       this.templatePath('root/htaccess'),
       this.destinationPath('root/.htaccess')
@@ -202,55 +201,23 @@ module.exports = class extends Generator {
       this.templatePath('root/gitignore'),
       this.destinationPath('root/.gitignore')
     );
-    this.fs.copy(
-      this.templatePath('modules/custom/gitkeep'),
-      this.destinationPath('modules/custom/.gitkeep')
-    );
-    this.fs.copy(this.templatePath('drush'), this.destinationPath('drush'));
+    this.fs.copy(this.templatePath('modules'), this.destinationPath('modules'));
+
     this.fs.copyTpl(
       this.templatePath('docs'),
       this.destinationPath('docs'),
       this.answers
     );
     this.fs.copy(this.templatePath('gulp-tasks'), this.destinationPath('gulp-tasks'));
-    this.fs.copyTpl(
-      this.templatePath('profiles/humpback/config'),
-      this.destinationPath('profiles/' + this.answers.appName + '/config'),
-      this.answers
-    );
-    this.fs.copyTpl(
-      this.templatePath('profiles/humpback/_humpback.info.yml'),
-      this.destinationPath(
-        'profiles/' + this.answers.appName + '/' + this.answers.appName + '.info.yml'
-      ),
-      this.answers
-    );
-    this.fs.copyTpl(
-      this.templatePath('profiles/humpback/_humpback.install'),
-      this.destinationPath(
-        'profiles/' + this.answers.appName + '/' + this.answers.appName + '.install'
-      ),
-      this.answers
-    );
+    this.fs.copy(this.templatePath('profiles'), this.destinationPath('profiles'));
     this.fs.copyTpl(
       this.templatePath('settings'),
       this.destinationPath('settings'),
       this.answers
     );
     this.fs.copy(this.templatePath('tests'), this.destinationPath('tests'));
-    this.fs.copy(
-      this.templatePath('themes/custom/gitkeep'),
-      this.destinationPath('themes/custom/.gitkeep')
-    );
-    this.fs.copyTpl(
-      this.templatePath('config/sync'),
-      this.destinationPath('config/sync'),
-      this.answers
-    );
-    this.fs.copy(
-      this.templatePath('config-htaccess'),
-      this.destinationPath('config/sync/.htaccess')
-    );
+    this.fs.copy(this.templatePath('themes'), this.destinationPath('themes'));
+    this.fs.copy(this.templatePath('config'), this.destinationPath('config'));
   }
 
   install() {

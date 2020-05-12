@@ -4,19 +4,19 @@
 # to power your Platform.sh project.
 
 db:
-    type: mariadb:10.2
-    disk: 5120
+    type: mariadb:10.4
+    disk: 2048
 
 cache:
     type: redis:5.0
 
-searchsolr:
+search:
     type: solr:6.6
-    disk: 2048
+    disk: 1024
     configuration:
         cores:
-            mainindex:
-                conf_dir: !archive "core1-conf"
+            maincore:
+                conf_dir: !archive "solr_6.x_config/"
         endpoints:
             main:
-                core: mainindex
+                core: maincore

@@ -51,14 +51,9 @@ commands:
   install:
     usage: Run install commands
     cmd: |
-      SITE_UUID="<%= siteUuid %>"
       ahoy drush cc drush
       echo "Installing..."
-      ahoy drush site-install <%= appName %> --account-pass=admin -y
-      echo "Set site uuid..."
-      ahoy drush config-set "system.site" uuid "$SITE_UUID" -y
-      echo "Importing config..."
-      if [ -f ./config/sync/core.extension.yml ] ; then ahoy drush cim -y ; fi
+      ahoy drush site-install standard --account-pass=admin --site-name="<%= humanName %>" -y
       echo "Cleaning cache..."
       ahoy drush cr
   install-from-db:
@@ -91,7 +86,7 @@ commands:
       fi
       if [ ! -f ./settings/settings.secret.php ]; then
         echo "Creating ./settings/settings.secret.php"
-        printf "<?php\n\n/**\n * @file\n * Secret configuration settings for the site.\n */\n\n// Database.\n\$databases = ['default']['default'] = [\n  'database' => 'drupal',\n  'username' => 'drupal',\n  'password' => 'drupal',\n  'host' => 'db',\n  'driver' => 'mysql',\n];\n\n\$settings['hash_salt'] = 'local';\n" > settings/settings.secret.php
+        printf "<?php\n\n/**\n * @file\n * Secret configuration settings for the site.\n */\n\n// Database.\n\$databases['default']['default'] = [\n  'database' => 'drupal',\n  'username' => 'drupal',\n  'password' => 'drupal',\n  'host' => 'db',\n  'driver' => 'mysql',\n];\n\n\$settings['hash_salt'] = 'local';\n" > settings/settings.secret.php
       fi
       if [ ! -f ./settings/services.local.yml ]; then
         echo "Creating ./settings/services.local.yml"
