@@ -4,7 +4,7 @@ const yosay = require('yosay');
 const _ = require('lodash');
 const xml2js = require('xml2js');
 const https = require('https');
-const uuidV4 = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');
 const remote = require('yeoman-remote');
 
 module.exports = class extends Generator {
@@ -18,7 +18,7 @@ module.exports = class extends Generator {
         type: 'input',
         name: 'humanName',
         message: 'How will you call your app?',
-        default: 'Humpback'
+        default: 'Humpback',
       },
       {
         type: 'input',
@@ -26,19 +26,19 @@ module.exports = class extends Generator {
         message: "What's your app machine name?",
         default(props) {
           return _.snakeCase(props.humanName);
-        }
+        },
       },
       {
         type: 'list',
         name: 'deployEnv',
         message: 'Where your app will be deployed?',
         choices: ['Pantheon', 'Platformsh'],
-        default: ['Pantheon']
-      }
+        default: ['Pantheon'],
+      },
     ]);
 
     this.answers.dashedAppName = this.answers.appName.replace('_', '-');
-    this.answers.siteUuid = uuidV4();
+    this.answers.siteUuid = uuidv4();
     this.answers.coreVersion = '8.8.0';
     this.deployEnvPath = 'deploy-environment/' + this.answers.deployEnv;
   }
@@ -47,9 +47,9 @@ module.exports = class extends Generator {
     // Get the latest stable version of Drupal.
     var done = this.async();
     var url = 'https://updates.drupal.org/release-history/drupal/8.x';
-    https.get(url, res => {
+    https.get(url, (res) => {
       var xml = '';
-      res.on('data', data => {
+      res.on('data', (data) => {
         xml += data;
       });
       res.on('error', () => {
@@ -74,6 +74,7 @@ module.exports = class extends Generator {
               }
             }
           }
+
           done();
         });
       });
@@ -115,6 +116,7 @@ module.exports = class extends Generator {
         this.destinationPath('settings/settings.platformsh.php')
       );
     }
+
     // Copy files from deploy-environment folder.
     this.fs.copy(
       this.templatePath(this.deployEnvPath + '/drush'),
