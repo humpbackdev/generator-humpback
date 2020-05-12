@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Change value as necessary.
+VIRTUAL_HOST=<%= dashedAppName %>.docker
+CONTAINER_UID=1000
+PHP_POST_MAX_SIZE=100M
+PHP_UPLOAD_MAX_FILESIZE=100M
+PHP_MEMORY_LIMIT=512M
+BLACKFIRE_SERVER_ID=CHANGEME
+BLACKFIRE_SERVER_TOKEN=CHANGEME
+
+# Vars used in CircleCI Config.
+# You don't need to fill in these values here; they're listed here only as reference.
+# You need to setup these variables in CircleCI UI.
+
+#GIT_EMAIL=
+#GIT_NAME=
+#PROJECT_ID=
+#PLATFORMSH_CLI_TOKEN=
+#SITE_UUID=<%= siteUuid %>

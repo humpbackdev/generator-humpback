@@ -149,6 +149,11 @@ module.exports = class extends Generator {
       this.destinationPath('composer.json'),
       this.answers
     );
+    this.fs.copyTpl(
+      this.templatePath(this.deployEnvPath + '/env'),
+      this.destinationPath('.env'),
+      this.answers
+    );
     // Copy common files.
     this.fs.copyTpl(
       this.templatePath('_README.md'),
@@ -168,7 +173,7 @@ module.exports = class extends Generator {
       this.templatePath('composer.patches.json'),
       this.destinationPath('composer.patches.json')
     );
-    this.fs.copyTpl(this.templatePath('env'), this.destinationPath('.env'), this.answers);
+
     this.fs.copyTpl(
       this.templatePath('_behat.yml'),
       this.destinationPath('behat.yml'),

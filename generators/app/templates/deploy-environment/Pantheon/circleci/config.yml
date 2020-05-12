@@ -138,7 +138,6 @@ jobs:
           name: Install ahoy
           command: |
             curl -L https://github.com/ahoy-cli/ahoy/releases/download/2.0.0/ahoy-bin-`uname -s`-amd64 --output /usr/local/bin/ahoy && chmod +x /usr/local/bin/ahoy
-      - checkout
       - add_ssh_keys:
       - run:
           name: Install and login terminus
