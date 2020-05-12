@@ -8,34 +8,61 @@ const { v4: uuidv4 } = require('uuid');
 const remote = require('yeoman-remote');
 
 module.exports = class extends Generator {
+  constructor(args, opts) {
+    super(args, opts);
+    this.option('humanName', { desc: 'The human name of the App'});
+    this.option('appName', { desc: 'The machine name of the App'});
+    this.option('deployEnv', { desc: 'The environment where the App will be deployed'});
+  }
+
   async prompting() {
     this.log(
       yosay('Welcome to the great ' + chalk.red('generator-humpback') + ' generator!')
     );
-    // Get the user aswers.
-    this.answers = await this.prompt([
-      {
+
+    const prompts = [];
+
+    if (!this.options.humanName) {
+      prompts.push({
         type: 'input',
         name: 'humanName',
         message: 'How will you call your app?',
         default: 'Humpback',
-      },
-      {
+      });
+    }
+
+    if (!this.options.appName) {
+      prompts.push({
         type: 'input',
         name: 'appName',
         message: "What's your app machine name?",
         default(props) {
           return _.snakeCase(props.humanName);
         },
-      },
-      {
+      });
+    }
+
+    if (!this.options.deployEnv) {
+      prompts.push({
         type: 'list',
         name: 'deployEnv',
         message: 'Where your app will be deployed?',
         choices: ['Pantheon', 'Platformsh'],
         default: ['Pantheon'],
-      },
-    ]);
+      });
+    }
+
+    this.answers = await this.prompt(prompts);
+
+    if (this.options['human-name']) {
+      this.answers.humanName = this.options['human-name'];
+    }
+    if (this.options['app-name']) {
+      this.answers.appName = this.options['app-name'];
+    }
+    if (this.options['deploy-env']) {
+      this.answers.deployEnv = this.options['deploy-env'];
+    }
 
     this.answers.dashedAppName = this.answers.appName.replace('_', '-');
     this.answers.siteUuid = uuidv4();
