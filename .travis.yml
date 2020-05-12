@@ -19,7 +19,6 @@ before_deploy:
 script:
   - 'mkdir $HOME/humpbacktest && cd $HOME/humpbacktest'
   - 'yo humpback --humanName="humpbacktest" --appName="humpbacktest" --deployEnv="Pantheon"'
-  - 'yo humpback --humanName="humpbacktest" --appName="humpbacktest" --deployEnv="Platformsh"'
   - npm audit | grep -E "(High | Critical)" -B3 -A10 ; CODE=$? ; if [ $CODE -eq 0 ] ; then echo "Vulnerabilities found" ; exit 1; fi
   - $HOME/circleci config validate
 deploy:
