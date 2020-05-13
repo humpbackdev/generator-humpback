@@ -29,6 +29,7 @@ vendor
 # Settings
 settings.secret.php
 settings.local.php
+services.local
 !.circleci/settings.secret.php
 
 # Plaform files

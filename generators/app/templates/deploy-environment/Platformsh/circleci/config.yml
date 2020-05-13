@@ -126,9 +126,9 @@ jobs:
       - checkout
       - add_ssh_keys:
       - run:
-        name: Install ahoy
-        command: |
-          curl -L https://github.com/ahoy-cli/ahoy/releases/download/2.0.0/ahoy-bin-`uname -s`-amd64 --output /usr/local/bin/ahoy && chmod +x /usr/local/bin/ahoy
+          name: Install ahoy
+          command: |
+            curl -L https://github.com/ahoy-cli/ahoy/releases/download/2.0.0/ahoy-bin-`uname -s`-amd64 --output /usr/local/bin/ahoy && chmod +x /usr/local/bin/ahoy
       - run:
           name: Install Platformsh CLI
           command: |
@@ -154,7 +154,7 @@ workflows:
       - deploy-live-hold:
           type: approval
           requires:
-          - build
+            - build
       - deploy-live:
           requires:
             - build
