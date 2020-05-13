@@ -17,7 +17,7 @@ $settings['file_scan_ignore_directories'] = [
   'node_modules',
   'bower_components',
 ];
-$settings['install_profile'] = '<%= appName %>';
+
 $settings['config_sync_directory'] = 'sites/default/config/sync';
 
 ini_set('session.gc_probability', 1);

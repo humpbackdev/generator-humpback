@@ -1,25 +1,5 @@
 ahoyapi: v2
 commands:
-  deploy:
-    usage: Deploy the site using ahoy
-    cmd: |
-      BRANCH=$1
-      MESSAGE=$2
-      REPO=$PROJECT_ID
-      CLONEFOLDER=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1`
-      rm -rf ./.git
-      cd ../
-      platform get $REPO $CLONEFOLDER
-      cd $CLONEFOLDER
-      git branch $BRANCH ; git checkout $BRANCH
-      cd ../
-      shopt -s extglob
-      rm -rf $CLONEFOLDER/!(.git|.|..)
-      cp -r <%= appName %>/ $CLONEFOLDER
-      cd $CLONEFOLDER
-      git add --all .
-      git commit -m "$MESSAGE"
-      git push -u platform $BRANCH
   behat:
     usage: Run behat tests
     cmd: |
@@ -45,7 +25,7 @@ commands:
     usage: Setup site using DB backup
     cmd: |
       if [ ! -f <%= appName %>.sql.gz ]; then
-        platform ddb:dump --gzip --file=<%= appName %>.sql.gz
+        platform db:dump --gzip --file=<%= appName %>.sql.gz
       fi
       ahoy drush cr
       echo "Drop Database..."

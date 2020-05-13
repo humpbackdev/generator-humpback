@@ -183,6 +183,10 @@ module.exports = class extends Generator {
       this.destinationPath('.env'),
       this.answers
     );
+    this.fs.copy(
+      this.templatePath(this.deployEnvPath + '/gitignore'),
+      this.destinationPath('.gitignore')
+    );
     // Copy common files.
     this.fs.copyTpl(
       this.templatePath('_README.md'),
@@ -223,7 +227,7 @@ module.exports = class extends Generator {
       this.templatePath('gitattributes'),
       this.destinationPath('.gitattributes')
     );
-    this.fs.copy(this.templatePath('gitignore'), this.destinationPath('.gitignore'));
+
     this.fs.copy(this.templatePath('web'), this.destinationPath('web'));
     this.fs.copy(this.templatePath('files'), this.destinationPath('files'));
     this.fs.copy(this.templatePath('patches'), this.destinationPath('patches'));
