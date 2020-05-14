@@ -29,11 +29,11 @@ vendor
 # Settings
 settings.secret.php
 settings.local.php
-services.local
+services.local.yml
 !.circleci/settings.secret.php
 
 # Plaform files
-.platform/local*
+.platform/local
 
 # Book build output
 docs/_book

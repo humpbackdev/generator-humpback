@@ -29,7 +29,7 @@ vendor
 # Settings
 settings.secret.php
 settings.local.php
-services.local
+services.local.yml
 !.circleci/settings.secret.php
 
 # Book build output

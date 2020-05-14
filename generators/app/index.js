@@ -10,8 +10,8 @@ const remote = require('yeoman-remote');
 module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
-    this.option('humanName', { desc: 'The human name of the App'});
-    this.option('appName', { desc: 'The machine name of the App'});
+    this.option('humanName', { desc: 'The human name of the App' });
+    this.option('appName', { desc: 'The machine name of the App' });
     this.option('deployEnv', { desc: 'The environment where the App will be deployed'});
   }
 
@@ -57,9 +57,11 @@ module.exports = class extends Generator {
     if (this.options['human-name']) {
       this.answers.humanName = this.options['human-name'];
     }
+
     if (this.options['app-name']) {
       this.answers.appName = this.options['app-name'];
     }
+
     if (this.options['deploy-env']) {
       this.answers.deployEnv = this.options['deploy-env'];
     }
@@ -133,6 +135,10 @@ module.exports = class extends Generator {
       this.fs.copy(
         this.templatePath(this.deployEnvPath + '/platform.app.yaml'),
         this.destinationPath('.platform.app.yaml')
+      );
+      this.fs.copy(
+        this.templatePath(this.deployEnvPath + '/environment'),
+        this.destinationPath('.environment')
       );
       this.fs.copy(
         this.templatePath(this.deployEnvPath + '/install-redis.sh'),

@@ -126,21 +126,13 @@ jobs:
       - checkout
       - add_ssh_keys:
       - run:
-          name: Install ahoy
-          command: |
-            curl -L https://github.com/ahoy-cli/ahoy/releases/download/2.0.0/ahoy-bin-`uname -s`-amd64 --output /usr/local/bin/ahoy && chmod +x /usr/local/bin/ahoy
-      - run:
-          name: Install Platformsh CLI
-          command: |
-            curl -sS https://platform.sh/cli/installer | php
-      - run:
           name: Deploy
           command: |
             git config --global user.email $GIT_EMAIL
             git config --global user.name $GIT_NAME
             echo 'Host *' >> /root/.ssh/config
             echo '   StrictHostKeyChecking no' >> /root/.ssh/config
-            /root/.platformsh/bin/platform project:set-remote $PLATFORM_PROJECT_ID --no
+            git remote add platform $PLATFORM_GIT_REPO
             git push -u platform master
 
 workflows:
