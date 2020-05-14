@@ -51,8 +51,8 @@
   "scripts": {
     "prepublishOnly": "npm audit --audit-level high",
     "pretest": "eslint .",
-    "": "lint-staged",
-    "test": "jestprecommit"
+    "precommit": "lint-staged",
+    "test": "jest"
   },
   "lint-staged": {
     "*.js": [
