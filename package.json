@@ -49,7 +49,7 @@
     "testEnvironment": "node"
   },
   "scripts": {
-    "prepublish": "npm audit --audit-level high",
+    "prepublishOnly": "npm audit --audit-level high",
     "pretest": "eslint .",
     "": "lint-staged",
     "test": "jestprecommit"

@@ -12,7 +12,7 @@ module.exports = class extends Generator {
     super(args, opts);
     this.option('humanName', { desc: 'The human name of the App' });
     this.option('appName', { desc: 'The machine name of the App' });
-    this.option('deployEnv', { desc: 'The environment where the App will be deployed'});
+    this.option('deployEnv', { desc: 'The environment where the App will be deployed' });
   }
 
   async prompting() {
