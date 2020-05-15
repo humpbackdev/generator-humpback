@@ -1,5 +1,26 @@
 ahoyapi: v2
 commands:
+  deploy:
+    usage: Deploy the site using ahoy
+    cmd: |
+      BRANCH=$1
+      MESSAGE=$2
+      REPO=$PLATFORM_GIT_REPO
+      CLONEFOLDER=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1`
+      git clone --branch $BRANCH $REPO $CLONEFOLDER || git clone $REPO $CLONEFOLDER
+      cd $CLONEFOLDER
+      git branch $BRANCH ; git checkout $BRANCH
+      shopt -s extglob
+      rm -rf ./!(.git|.|..)
+      cd ../
+      cp -r {.platform,composer-scripts,config,drush,files,modules,patches,profiles,root,settings,themes,web} $CLONEFOLDER
+      cp -r {.environment,.platform.app.yaml,composer.json,composer.lock,composer.patches.json,install-redis.sh,package.json,package-lock.json} $CLONEFOLDER
+      cd $CLONEFOLDER
+      git add --all .
+      git commit -m "$MESSAGE"
+      git push origin $BRANCH
+      cd ../
+      rm -rf $CLONEFOLDER
   behat:
     usage: Run behat tests
     cmd: |

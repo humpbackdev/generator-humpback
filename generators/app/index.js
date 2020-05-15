@@ -234,9 +234,15 @@ module.exports = class extends Generator {
       this.destinationPath('.gitattributes')
     );
 
-    this.fs.copy(this.templatePath('web'), this.destinationPath('web'));
-    this.fs.copy(this.templatePath('files'), this.destinationPath('files'));
-    this.fs.copy(this.templatePath('patches'), this.destinationPath('patches'));
+    this.fs.copy(this.templatePath('web/gitkeep'), this.destinationPath('web/.gitkeep'));
+    this.fs.copy(
+      this.templatePath('files/gitkeep'),
+      this.destinationPath('files/.gitkeep')
+    );
+    this.fs.copy(
+      this.templatePath('patches/gitkeep'),
+      this.destinationPath('patches/.gitkeep')
+    );
     this.fs.copy(
       this.templatePath('root/htaccess'),
       this.destinationPath('root/.htaccess')
@@ -253,7 +259,10 @@ module.exports = class extends Generator {
       this.answers
     );
     this.fs.copy(this.templatePath('gulp-tasks'), this.destinationPath('gulp-tasks'));
-    this.fs.copy(this.templatePath('profiles'), this.destinationPath('profiles'));
+    this.fs.copy(
+      this.templatePath('profiles/gitkeep'),
+      this.destinationPath('profiles/.gitkeep')
+    );
     this.fs.copyTpl(
       this.templatePath('settings'),
       this.destinationPath('settings'),

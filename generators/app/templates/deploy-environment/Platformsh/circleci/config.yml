@@ -124,6 +124,10 @@ jobs:
     working_directory: /var/www/<%= appName %>
     steps:
       - checkout
+      - run:
+          name: Install ahoy
+          command: |
+            curl -L https://github.com/ahoy-cli/ahoy/releases/download/2.0.0/ahoy-bin-`uname -s`-amd64 --output /usr/local/bin/ahoy && chmod +x /usr/local/bin/ahoy
       - add_ssh_keys:
       - run:
           name: Deploy
@@ -132,8 +136,7 @@ jobs:
             git config --global user.name $GIT_NAME
             echo 'Host *' >> /root/.ssh/config
             echo '   StrictHostKeyChecking no' >> /root/.ssh/config
-            git remote add platform $PLATFORM_GIT_REPO
-            git push -u platform master
+            ahoy site deploy master "Auto deploy triggered from master branch"
 
 workflows:
   version: 2
