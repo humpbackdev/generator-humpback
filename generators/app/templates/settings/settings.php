@@ -18,13 +18,10 @@ $settings['file_scan_ignore_directories'] = [
   'bower_components',
 ];
 
-$settings['config_sync_directory'] = 'sites/default/config/sync';
-
 ini_set('session.gc_probability', 1);
 ini_set('session.gc_divisor', 100);
 ini_set('session.gc_maxlifetime', 200000);
 ini_set('session.cookie_lifetime', 2000000);
-
 
 /**
  * Automatic <%= deployEnv %> settings.
@@ -51,3 +48,5 @@ if (file_exists($app_root . '/' . $site_path . '/settings.secret.php')) {
 if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
   include $app_root . '/' . $site_path . '/settings.local.php';
 }
+
+$settings['config_sync_directory'] = 'sites/default/config/sync';
