@@ -17,6 +17,11 @@ use Behat\Mink\Exception\ElementNotFoundException;
  */
 class FeatureContext extends RawDrupalContext {
 
+  /**
+   * Language.
+   *
+   * @var mixed
+   */
   private $language;
 
   /**
@@ -82,11 +87,11 @@ class FeatureContext extends RawDrupalContext {
     // Check if a user with this role is already logged in.
     if (!$this->loggedInWithRole($role)) {
       // Create user (and project).
-      $user = (object) array(
+      $user = [
         'name' => $this->getRandom()->name(8),
         'pass' => $this->getRandom()->name(16),
         'role' => $role,
-      );
+      ];
       $user->mail = "{$user->name}@example.com";
 
       // Assign fields to user before creation.
@@ -99,7 +104,7 @@ class FeatureContext extends RawDrupalContext {
       $roles = explode(',', $role);
       $roles = array_map('trim', $roles);
       foreach ($roles as $role) {
-        if (!in_array(strtolower($role), array('authenticated', 'authenticated user'))) {
+        if (!in_array(strtolower($role), ['authenticated', 'authenticated user'])) {
           // Only add roles other than 'authenticated user'.
           $this->getDriver()->userAddRole($user, $role);
         }
@@ -349,12 +354,12 @@ class FeatureContext extends RawDrupalContext {
    * @When I am viewing a published :type content with the title :title
    */
   public function createPublishedNode($type, $title) {
-    $node = (object) array(
+    $node = [
       'title' => $title,
       'type' => $type,
       'body' => $this->getRandom()->string(255),
       'status' => 1,
-    );
+    ];
     $saved = $this->nodeCreate($node);
     // Set internal page on the new node.
     $this->getSession()->visit($this->locatePath('/node/' . $saved->nid));
