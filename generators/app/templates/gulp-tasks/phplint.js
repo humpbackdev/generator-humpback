@@ -4,31 +4,29 @@
  */
 /* eslint-env node */
 /* eslint no-console:0 */
+/* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 
-'use strict';
+const gulp = require('gulp');
+const phplint = require('phplint').lint;
+const PluginError = require('plugin-error');
 
-var gulp = require('gulp');
-var phplint = require('phplint').lint;
-var gutil = require('gulp-util');
-
-gulp.task('phplint', function (cb) {
-
-  var extensions = '{php,module,inc,install,test,profile,theme}';
-  var sourcePatterns = [
-    'modules/**/*.' + extensions,
-    'themes/**/*.' + extensions,
-    'tests/behat/**/*.' + extensions,
-    'settings/**/*.' + extensions
+gulp.task('phplint', (cb) => {
+  const extensions = '{php,module,inc,install,test,profile,theme}';
+  const sourcePatterns = [
+    `modules/**/*.${extensions}`,
+    `themes/**/*.${extensions}`,
+    `tests/behat/**/*.${extensions}`,
+    `settings/**/*.${extensions}`,
   ];
-  var phpLintOptions = {
-    limit: 50
+  const phpLintOptions = {
+    limit: 50,
   };
 
-  phplint(sourcePatterns, phpLintOptions, function (err, stdout, stderr) {
+  phplint(sourcePatterns, phpLintOptions, (err) => {
     if (err) {
-      throw new gutil.PluginError({
+      throw new PluginError({
         plugin: 'phplint',
-        message: err
+        message: err,
       });
     }
     cb();

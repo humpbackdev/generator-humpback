@@ -228,7 +228,16 @@ module.exports = class extends Generator {
       this.templatePath('editorconfig'),
       this.destinationPath('.editorconfig')
     );
-    this.fs.copy(this.templatePath('eslintrc'), this.destinationPath('.eslintrc'));
+    this.fs.copy(
+      this.templatePath('eslintrc.json'),
+      this.destinationPath('.eslintrc.json')
+    );
+    this.fs.copy(this.templatePath('babelrc'), this.destinationPath('.babelrc'));
+    this.fs.copy(this.templatePath('nvmrc'), this.destinationPath('.nvmrc'));
+    this.fs.copy(
+      this.templatePath('prettierrc.json'),
+      this.destinationPath('.prettierrc.json')
+    );
     this.fs.copy(
       this.templatePath('gitattributes'),
       this.destinationPath('.gitattributes')
