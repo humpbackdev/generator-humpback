@@ -4,9 +4,11 @@ var helpers = require('yeoman-test');
 
 describe('generator-humpback:app', () => {
   beforeAll(() => {
-    return helpers
-      .run(path.join(__dirname, '../generators/app'))
-      .withPrompts({ humanName: 'Humpback', appName: 'humpback' });
+    return helpers.run(path.join(__dirname, '../generators/app')).withPrompts({
+      humanName: 'Humpback',
+      appName: 'humpback',
+      deployEnv: 'Platformsh',
+    });
   });
 
   it('creates files', () => {

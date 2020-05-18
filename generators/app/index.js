@@ -4,30 +4,30 @@ const yosay = require('yosay');
 const _ = require('lodash');
 const xml2js = require('xml2js');
 const https = require('https');
-const uuidV4 = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');
 const remote = require('yeoman-remote');
 
 module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
-    this.option('humanName');
-    this.option('appName');
+    this.option('humanName', { desc: 'The human name of the App' });
+    this.option('appName', { desc: 'The machine name of the App' });
+    this.option('deployEnv', { desc: 'The environment where the App will be deployed' });
   }
 
   async prompting() {
-    // Have Yeoman greet the user.
     this.log(
       yosay('Welcome to the great ' + chalk.red('generator-humpback') + ' generator!')
     );
 
-    var prompts = [];
+    const prompts = [];
 
     if (!this.options.humanName) {
       prompts.push({
         type: 'input',
         name: 'humanName',
         message: 'How will you call your app?',
-        default: 'Humpback'
+        default: 'Humpback',
       });
     }
 
@@ -36,84 +36,174 @@ module.exports = class extends Generator {
         type: 'input',
         name: 'appName',
         message: "What's your app machine name?",
-        default: function(props) {
+        default(props) {
           return _.snakeCase(props.humanName);
-        }
+        },
       });
     }
 
-    this.props = await this.prompt(prompts);
-    if (this.options['human-name']) {
-      this.props.humanName = this.options['human-name'];
+    if (!this.options.deployEnv) {
+      prompts.push({
+        type: 'list',
+        name: 'deployEnv',
+        message: 'Where your app will be deployed?',
+        choices: ['Pantheon', 'Platformsh'],
+        default: ['Pantheon'],
+      });
     }
-    if (this.options['app-name']) {
-      this.props.appName = this.options['app-name'];
-    }
-    this.props.dashedAppName = this.props.appName.replace('_', '-');
 
-    this.props.siteUuid = uuidV4();
-    this.props.coreVersion = '8.3.7';
+    this.answers = await this.prompt(prompts);
+
+    if (this.options['human-name']) {
+      this.answers.humanName = this.options['human-name'];
+    }
+
+    if (this.options['app-name']) {
+      this.answers.appName = this.options['app-name'];
+    }
+
+    if (this.options['deploy-env']) {
+      this.answers.deployEnv = this.options['deploy-env'];
+    }
+
+    this.answers.dashedAppName = this.answers.appName.replace('_', '-');
+    this.answers.siteUuid = uuidv4();
+    this.answers.coreVersion = '8.8.0';
+    this.deployEnvPath = 'deploy-environment/' + this.answers.deployEnv;
   }
 
-  writing() {
-    var self = this;
-    remote('humpbackdev', 'humpback', 'v1.28', function(err, extractPath) {
-      self.fs.copy(extractPath, self.destinationPath('./'));
-      self.fs.copy(extractPath + '/.ahoy', self.destinationPath('.ahoy'));
-      self.fs.copy(extractPath + '/.ahoy.yml', self.destinationPath('.ahoy.yml'));
-      self.fs.copyTpl(
-        self.templatePath('_README.md'),
-        self.destinationPath('README.md'),
-        self.props
-      );
-      self.fs.copyTpl(
-        self.templatePath('_site.ahoy.yml'),
-        self.destinationPath('.ahoy/site.ahoy.yml'),
-        self.props
-      );
-      self.fs.copyTpl(
-        self.templatePath('_docker-compose.yml'),
-        self.destinationPath('docker-compose.yml'),
-        self.props
-      );
-    });
-    var parser = new xml2js.Parser();
+  configuring() {
+    // Get the latest stable version of Drupal.
+    var done = this.async();
     var url = 'https://updates.drupal.org/release-history/drupal/8.x';
-    https.get(url, function(res) {
+    https.get(url, (res) => {
       var xml = '';
-      res.on('data', function(chunk) {
-        xml += chunk;
+      res.on('data', (data) => {
+        xml += data;
       });
-      res.on('error', function() {
-        self.fs.copyTpl(
-          self.templatePath('_composer.json'),
-          self.destinationPath('composer.json'),
-          self.props
+      res.on('error', () => {
+        this.log(
+          'Error getting the lastest relase of drupal, using the default: ',
+          this.answers.coreVersion
         );
       });
-      res.on('end', function() {
-        parser.parseString(xml, function(err, result) {
+      res.on('end', () => {
+        var parser = new xml2js.Parser();
+        parser.parseString(xml, (err, result) => {
           if (!err) {
-            for (
-              var index = 0;
-              index < result.project.releases[0].release.length;
-              index++
-            ) {
-              var release = result.project.releases[0].release[index];
-              if (typeof release.version_extra === 'undefined') {
-                self.props.coreVersion = release.version;
+            var releases = result.project.releases[0].release;
+            for (var index = 0; index < releases.length; index++) {
+              var release = releases[index];
+              if (
+                typeof release.version_extra === 'undefined' &&
+                String(release.version[0]).startsWith('8.')
+              ) {
+                this.answers.coreVersion = release.version[0];
                 break;
               }
             }
           }
-          self.fs.copyTpl(
-            self.templatePath('_composer.json'),
-            self.destinationPath('composer.json'),
-            self.props
-          );
+
+          done();
         });
       });
     });
+  }
+
+  default() {
+    // Copy the humpback dev.
+    var done = this.async();
+    remote('humpbackdev', 'humpback', 'v1.28', (error, extractPath) => {
+      this.fs.copy(extractPath, this.destinationPath('./'));
+      this.fs.copy(extractPath + '/.ahoy', this.destinationPath('.ahoy'));
+      this.fs.copy(extractPath + '/.ahoy.yml', this.destinationPath('.ahoy.yml'));
+      done();
+    });
+  }
+
+  writing() {
+    if (this.answers.deployEnv === 'Pantheon') {
+      this.fs.copy(
+        this.templatePath(this.deployEnvPath + '/pantheon.yml'),
+        this.destinationPath('pantheon.yml')
+      );
+    } else {
+      this.fs.copy(
+        this.templatePath(this.deployEnvPath + '/platform'),
+        this.destinationPath('.platform')
+      );
+      this.fs.copy(
+        this.templatePath(this.deployEnvPath + '/platform.app.yaml'),
+        this.destinationPath('.platform.app.yaml')
+      );
+      this.fs.copy(
+        this.templatePath(this.deployEnvPath + '/environment'),
+        this.destinationPath('.environment')
+      );
+      this.fs.copy(
+        this.templatePath(this.deployEnvPath + '/install-redis.sh'),
+        this.destinationPath('install-redis.sh')
+      );
+      this.fs.copy(
+        this.templatePath(this.deployEnvPath + '/settings/settings.platformsh.php'),
+        this.destinationPath('settings/settings.platformsh.php')
+      );
+    }
+
+    // Copy files from deploy-environment folder.
+    this.fs.copy(
+      this.templatePath(this.deployEnvPath + '/drush'),
+      this.destinationPath('drush')
+    );
+    this.fs.copyTpl(
+      this.templatePath(this.deployEnvPath + '/circleci/site'),
+      this.destinationPath('.circleci/' + this.answers.appName),
+      this.answers
+    );
+    this.fs.copyTpl(
+      this.templatePath(this.deployEnvPath + '/circleci/site.aliases.drushrc.php'),
+      this.destinationPath('.circleci/' + this.answers.appName + '.aliases.drushrc.php'),
+      this.answers
+    );
+    this.fs.copyTpl(
+      this.templatePath(this.deployEnvPath + '/circleci/config.yml'),
+      this.destinationPath('.circleci/config.yml'),
+      this.answers
+    );
+    this.fs.copy(
+      this.templatePath(this.deployEnvPath + '/circleci/settings.secret.php'),
+      this.destinationPath('.circleci/settings.secret.php')
+    );
+    this.fs.copyTpl(
+      this.templatePath(this.deployEnvPath + '/site.ahoy.yml'),
+      this.destinationPath('.ahoy/site.ahoy.yml'),
+      this.answers
+    );
+    this.fs.copyTpl(
+      this.templatePath(this.deployEnvPath + '/composer.json'),
+      this.destinationPath('composer.json'),
+      this.answers
+    );
+    this.fs.copyTpl(
+      this.templatePath(this.deployEnvPath + '/env'),
+      this.destinationPath('.env'),
+      this.answers
+    );
+    this.fs.copy(
+      this.templatePath(this.deployEnvPath + '/gitignore'),
+      this.destinationPath('.gitignore')
+    );
+    // Copy common files.
+    this.fs.copyTpl(
+      this.templatePath('_README.md'),
+      this.destinationPath('README.md'),
+      this.answers
+    );
+    this.fs.copyTpl(
+      this.templatePath('_docker-compose.yml'),
+      this.destinationPath('docker-compose.yml'),
+      this.answers
+    );
     this.fs.copy(
       this.templatePath('composer-scripts'),
       this.destinationPath('composer-scripts')
@@ -122,18 +212,17 @@ module.exports = class extends Generator {
       this.templatePath('composer.patches.json'),
       this.destinationPath('composer.patches.json')
     );
-    this.fs.copy(this.templatePath('pantheon.yml'), this.destinationPath('pantheon.yml'));
-    this.fs.copyTpl(this.templatePath('env'), this.destinationPath('.env'), this.props);
+
     this.fs.copyTpl(
       this.templatePath('_behat.yml'),
       this.destinationPath('behat.yml'),
-      this.props
+      this.answers
     );
     this.fs.copy(this.templatePath('gulpfile.js'), this.destinationPath('gulpfile.js'));
     this.fs.copyTpl(
       this.templatePath('_package.json'),
       this.destinationPath('package.json'),
-      this.props
+      this.answers
     );
     this.fs.copy(
       this.templatePath('editorconfig'),
@@ -153,7 +242,7 @@ module.exports = class extends Generator {
       this.templatePath('gitattributes'),
       this.destinationPath('.gitattributes')
     );
-    this.fs.copy(this.templatePath('gitignore'), this.destinationPath('.gitignore'));
+
     this.fs.copy(this.templatePath('web/gitkeep'), this.destinationPath('web/.gitkeep'));
     this.fs.copy(
       this.templatePath('files/gitkeep'),
@@ -171,70 +260,26 @@ module.exports = class extends Generator {
       this.templatePath('root/gitignore'),
       this.destinationPath('root/.gitignore')
     );
-    this.fs.copy(
-      this.templatePath('modules/custom/gitkeep'),
-      this.destinationPath('modules/custom/.gitkeep')
+    this.fs.copy(this.templatePath('modules'), this.destinationPath('modules'));
+
+    this.fs.copyTpl(
+      this.templatePath('docs'),
+      this.destinationPath('docs'),
+      this.answers
     );
-    this.fs.copy(this.templatePath('drush'), this.destinationPath('drush'));
-    this.fs.copyTpl(this.templatePath('docs'), this.destinationPath('docs'), this.props);
     this.fs.copy(this.templatePath('gulp-tasks'), this.destinationPath('gulp-tasks'));
-    this.fs.copyTpl(
-      this.templatePath('profiles/humpback/config'),
-      this.destinationPath('profiles/' + this.props.appName + '/config'),
-      this.props
-    );
-    this.fs.copyTpl(
-      this.templatePath('profiles/humpback/_humpback.info.yml'),
-      this.destinationPath(
-        'profiles/' + this.props.appName + '/' + this.props.appName + '.info.yml'
-      ),
-      this.props
-    );
-    this.fs.copyTpl(
-      this.templatePath('profiles/humpback/_humpback.install'),
-      this.destinationPath(
-        'profiles/' + this.props.appName + '/' + this.props.appName + '.install'
-      ),
-      this.props
+    this.fs.copy(
+      this.templatePath('profiles/gitkeep'),
+      this.destinationPath('profiles/.gitkeep')
     );
     this.fs.copyTpl(
       this.templatePath('settings'),
       this.destinationPath('settings'),
-      this.props
+      this.answers
     );
     this.fs.copy(this.templatePath('tests'), this.destinationPath('tests'));
-    this.fs.copy(
-      this.templatePath('themes/custom/gitkeep'),
-      this.destinationPath('themes/custom/.gitkeep')
-    );
-    this.fs.copyTpl(
-      this.templatePath('config/sync'),
-      this.destinationPath('config/sync'),
-      this.props
-    );
-    this.fs.copy(
-      this.templatePath('config-htaccess'),
-      this.destinationPath('config/sync/.htaccess')
-    );
-    this.fs.copyTpl(
-      this.templatePath('circleci/site'),
-      this.destinationPath('.circleci/' + this.props.appName),
-      this.props
-    );
-    this.fs.copyTpl(
-      this.templatePath('circleci/site.aliases.drushrc.php'),
-      this.destinationPath('.circleci/' + this.props.appName + '.aliases.drushrc.php'),
-      this.props
-    );
-    this.fs.copyTpl(
-      this.templatePath('circleci/config.yml'),
-      this.destinationPath('.circleci/config.yml'),
-      this.props
-    );
-    this.fs.copy(
-      this.templatePath('circleci/settings.secret.php'),
-      this.destinationPath('.circleci/settings.secret.php')
-    );
+    this.fs.copy(this.templatePath('themes'), this.destinationPath('themes'));
+    this.fs.copy(this.templatePath('config'), this.destinationPath('config'));
   }
 
   install() {
