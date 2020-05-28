@@ -51,9 +51,17 @@ commands:
   install:
     usage: Run install commands
     cmd: |
+      SITE_UUID="<%= siteUuid %>"
       ahoy drush cc drush
-      echo "Installing..."
-      ahoy drush site-install standard --account-pass=admin --site-name="<%= humanName %>" -y
+      if [ -f ./config/sync/core.extension.yml ]; then
+        echo "Installing with existing config..."
+        ahoy drush site-install standard --account-pass=admin --site-name="<%= humanName %>" --config-dir="sites/default/config/sync" -y
+      else
+        echo "Installing the new site..."
+        ahoy drush site-install standard --account-pass=admin --site-name="<%= humanName %>" -y
+        echo "Set site uuid..."
+        ahoy drush config-set "system.site" uuid "$SITE_UUID" -y
+      fi
       echo "Cleaning cache..."
       ahoy drush cr
   install-from-db:

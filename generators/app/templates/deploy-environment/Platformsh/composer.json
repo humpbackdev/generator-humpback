@@ -82,8 +82,7 @@
       "root/.gitignore": "web/.gitignore",
       "settings/settings.php": "web/sites/default/settings.php",
       "settings/settings.local.php": "web/sites/default/settings.local.php",
-      "settings/settings.platformsh.php":
-        "web/sites/default/settings.platformsh.php",
+      "settings/settings.platformsh.php": "web/sites/default/settings.platformsh.php",
       "settings/settings.secret.php": "web/sites/default/settings.secret.php",
       "settings/services.yml": "web/sites/default/services.yml",
       "settings/services.local.yml": "web/sites/default/services.local.yml",
