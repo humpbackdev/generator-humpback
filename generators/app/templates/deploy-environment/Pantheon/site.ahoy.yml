@@ -22,6 +22,7 @@ commands:
       find ./web/libraries/ -name ".git" -exec rm -rf {} \;
       find ./web/sites/all/libraries/ -name ".git" -exec rm -rf {} \;
       cp -r web $CLONEFOLDER/web
+      cp -r {package.json,package-lock.json} $CLONEFOLDER
       mv vendor $CLONEFOLDER/
       cp pantheon.yml $CLONEFOLDER/
       cd $CLONEFOLDER
