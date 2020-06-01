@@ -21,7 +21,7 @@
     "drupal/core-recommended": "<%= coreVersion %>",
     "cweagans/composer-patches": "^1.6.5",
     "drupal/redis": "^1.4",
-    "drupal/search_api_solr": "^3.9",
+    "drupal/search_api_solr": "^4.0",
     "drush/drush": "^9.7.1 | ^10.0.0",
     "platformsh/config-reader": "^2.3",
     "symfony/event-dispatcher": "4.3.4 as 3.4.35"
@@ -82,8 +82,7 @@
       "root/.gitignore": "web/.gitignore",
       "settings/settings.php": "web/sites/default/settings.php",
       "settings/settings.local.php": "web/sites/default/settings.local.php",
-      "settings/settings.platformsh.php":
-        "web/sites/default/settings.platformsh.php",
+      "settings/settings.platformsh.php": "web/sites/default/settings.platformsh.php",
       "settings/settings.secret.php": "web/sites/default/settings.secret.php",
       "settings/services.yml": "web/sites/default/services.yml",
       "settings/services.local.yml": "web/sites/default/services.local.yml",

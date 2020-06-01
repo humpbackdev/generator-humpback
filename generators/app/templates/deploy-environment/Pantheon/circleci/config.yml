@@ -43,7 +43,14 @@ jobs:
             composer install
             chmod 777 -R ./web/sites/default/files
             cd web
-            if [ -f /var/www/<%= appName %>/config/sync/core.extension.yml ] ; then echo 'Install with config' ; /usr/bin/env PHP_OPTIONS="-d sendmail_path=`which true`" ../vendor/bin/drush si <%= appName %> -y ; ../vendor/bin/drush config-set "system.site" uuid $SITE_UUID -y ; ../vendor/bin/drush cim -y ; else echo 'Install without config' ; /usr/bin/env PHP_OPTIONS="-d sendmail_path=`which true`" ../vendor/bin/drush si <%= appName %> -y ; fi
+            /usr/bin/env PHP_OPTIONS="-d sendmail_path=`which true`"
+            if [ -f /var/www/<%= appName %>/config/sync/core.extension.yml ]; then
+              echo "Installing with existing config..."
+              ../vendor/bin/drush si standard --config-dir="sites/default/config/sync" -y
+            else
+              echo 'Install without config ...'
+              ../vendor/bin/drush si standard -y
+            fi
             cd /var/www/<%= appName %>
       - run:
           name: Coding Standards Linters
@@ -156,10 +163,9 @@ jobs:
             terminus connection:set  <%= dashedAppName %>.dev git
             ahoy site deploy master "Auto deploy triggered from master branch"
             terminus connection:set  <%= dashedAppName %>.dev sftp
-            terminus drush <%= dashedAppName %>.dev -- si <%= appName %> --account-pass=admin -y
+            terminus drush <%= dashedAppName %>.dev -- si <%= appName %> --account-pass=admin --config-dir="sites/default/config/sync" -y
             terminus connection:set  <%= dashedAppName %>.dev git
             terminus drush <%= dashedAppName %>.dev -- config-set "system.site" uuid "$SITE_UUID" -y
-            terminus drush <%= dashedAppName %>.dev -- cim -y
             terminus drush <%= dashedAppName %>.dev -- cr
   deploy-test:
     docker:

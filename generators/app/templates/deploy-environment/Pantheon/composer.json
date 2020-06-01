@@ -20,11 +20,11 @@
     "kporras07/composer-symlinks": "dev-master",
     "drupal/core-recommended": "<%= coreVersion %>",
     "cweagans/composer-patches": "^1.6.5",
-    "pantheon-systems/drupal-integrations": "^8.0"
+    "pantheon-systems/drupal-integrations": "^8.0",
+    "drush/drush": "^9.7.1 | ^10.0.0",
   },
   "require-dev": {
     "testdrupal/behatextension": "dev-update",
-    "drush/drush": "^9.7.1 | ^10.0.0",
     "squizlabs/php_codesniffer": "^3.5",
     "drupal/coder": "^8.2",
     "behat/behat": "3.4.0",
