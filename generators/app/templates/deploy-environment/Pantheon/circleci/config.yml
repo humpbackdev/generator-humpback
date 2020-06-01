@@ -163,10 +163,9 @@ jobs:
             terminus connection:set  <%= dashedAppName %>.dev git
             ahoy site deploy master "Auto deploy triggered from master branch"
             terminus connection:set  <%= dashedAppName %>.dev sftp
-            terminus drush <%= dashedAppName %>.dev -- si <%= appName %> --account-pass=admin -y
+            terminus drush <%= dashedAppName %>.dev -- si <%= appName %> --account-pass=admin --config-dir="sites/default/config/sync" -y
             terminus connection:set  <%= dashedAppName %>.dev git
             terminus drush <%= dashedAppName %>.dev -- config-set "system.site" uuid "$SITE_UUID" -y
-            terminus drush <%= dashedAppName %>.dev -- cim -y
             terminus drush <%= dashedAppName %>.dev -- cr
   deploy-test:
     docker:
