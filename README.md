@@ -7,8 +7,7 @@ Using this generator you'll get a folder ready to start working with Drupal usin
 
 Out of the box; you'll get the necessary stuff for building your Drupal site using composer. There are also some useful tools to check code quality (eslint, phplint, drupalcs) and some scripts for day-to-day tasks (generate settings, install site, run behat, etc).
 
-Besides that; you'll get a [CircleCI](http://circleci.com/) config file ready to create a circleci app with the necessary build steps and workflow to get [Pantheon](http://pantheon.io/) deploys.
-
+Besides that; you'll get a [CircleCI](http://circleci.com/) config file ready to create a circleci app with the necessary build steps and workflow to get [Pantheon](http://pantheon.io/) or [Platform.sh](https://platform.sh/) deploys.
 
 ## Installation
 
@@ -48,7 +47,6 @@ This project makes use of the "Semantic versioning" standard to name each releas
 ## License
 
 GPL-3.0 © Estudio Manatí S.A.
-
 
 [npm-image]: https://badge.fury.io/js/generator-humpback.svg
 [npm-url]: https://npmjs.org/package/generator-humpback
