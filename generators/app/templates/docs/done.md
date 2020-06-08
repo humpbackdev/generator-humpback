@@ -7,7 +7,7 @@ A story is considered complete when:
   * Module / Theme / Project `README.md`
   * Code comments.
   * `docs/`
-* The acceptance criteria of the story are compoleted.
+* The acceptance criteria of the story are completed.
 * No manual steps are needed for deployment.
 * Steps for demoing are documented in the story.
 * The pull request links to the story and the story links to the pull request.
