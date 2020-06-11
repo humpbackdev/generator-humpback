@@ -4,22 +4,24 @@ A story is considered complete when:
 
 * The intent of the user story is completed.
 * Appropriate documentation was created.
-    * Module / Theme / Project `README.md`
-    * Code comments.
-    * `docs/`
+  * Module / Theme / Project `README.md`
+  * Code comments.
+  * `docs/`
+* The acceptance criteria of the story are completed.
 * No manual steps are needed for deployment.
 * Steps for demoing are documented in the story.
 * The pull request links to the story and the story links to the pull request.
+* The pull request passes all automated tests.
 * All Behat tests pass.
-    * New functionality should have a corresponding test.
+  * New functionality should have a corresponding test.
 * Pull request passes code review.
-    * Uses Drupal and development best practices.
-        * Peer code review.
-    * Adheres to [Drupal Coding Standards](https://www.drupal.org/coding-standards).
-        * `gulp drupalcs`
-    * No PHP Lint errors exist.
-        * `gulp phplint`
-    * No ESLint errors exist.
-        * `gulp eslint`
+  * Uses Drupal and development best practices.
+    * Peer code review.
+  * Adheres to [Drupal Coding Standards](https://www.drupal.org/coding-standards).
+    * `gulp drupalcs`
+  * No PHP Lint errors exist.
+    * `gulp phplint`
+  * No ESLint errors exist.
+    * `gulp eslint`
 * Code is merged into `develop`.
 * Product Owner accepts result of demo.
