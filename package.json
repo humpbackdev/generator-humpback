@@ -29,7 +29,7 @@
     "husky": "^4.2.5",
     "jest": "^26.0.1",
     "jest-cli": "^26.0.1",
-    "lint-staged": "^10.2.2",
+    "lint-staged": "^11.0.0",
     "prettier": "^2.0.5",
     "yeoman-assert": "^3.0.0",
     "yeoman-test": "^2.6.0"
